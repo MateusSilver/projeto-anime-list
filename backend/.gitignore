@@ -34,8 +34,8 @@ build/
 
 # Configurações da IDE (IntelliJ)
 /.idea/
-*.iml
-../.idea/
+**/*.iml
+**/.idea/
 */.mvn
 /target/
 *.log
