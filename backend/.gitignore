@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Configurações da IDE (IntelliJ)
+/.idea/
+*.iml
+../.idea/
+*/.mvn
+/target/
+*.log

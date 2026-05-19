@@ -21,6 +21,9 @@ public class Anime {
     @Column(nullable = false, length=200)
     private String title;
 
+    @Column(length = 500)
+    private String imageUrl;
+
     private String type;
     private Integer episodes;
     private Integer watchedEpisodes;
