@@ -33,6 +33,7 @@ public class Anime {
     @Column(columnDefinition = "TEXT")
     private String comments;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
