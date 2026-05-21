@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/preserve-manual-memoization */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -16,6 +17,60 @@ interface ListProps {
   imageUrl: string;
 }
 
+// dicionarios globais
+
+const CATEGORY_LABELS: Record<string, string> = {
+  status: "Status",
+  type: "Tipo",
+};
+
+const VALUE_LABELS: Record<string, string> = {
+  Watching: "Assistindo",
+  Completed: "Concluído",
+  "On-Hold": "Pausado",
+  Dropped: "Abandonado",
+  "Plan to Watch": "Planejo ver",
+  TV: "TV",
+  Movie: "Filme",
+  OVA: "OVA",
+  ONA: "Streaming",
+  Special: "Especial",
+  all: "Todos",
+};
+
+const STATUS_WEIGHTS: Record<string, number> = {
+  Watching: 1,
+  Completed: 2,
+  "On-Hold": 3,
+  Dropped: 4,
+  "Plan to Watch": 5,
+};
+
+const BADGE_CLASSES: Record<string, string> = {
+  Watching: "bg-success text-white",
+  Completed: "bg-info",
+  "On-Hold": "bg-warning text-dark",
+  Dropped: "bg-danger text-white",
+  "Plan to Watch": "bg-dark text-white",
+};
+
+const FILTER_OPTIONS: Record<string, { value: string; label: string }[]> = {
+  status: [
+    { value: "Watching", label: "Assistindo" },
+    { value: "Completed", label: "Concluído" },
+    { value: "On-Hold", label: "Pausado" },
+    { value: "Dropped", label: "Abandonado" },
+    { value: "Plan to Watch", label: "Planejo ver" },
+  ],
+  type: [
+    { value: "TV", label: "TV" },
+    { value: "Movie", label: "Filme" },
+    { value: "OVA", label: "OVA" },
+    { value: "ONA", label: "Streaming" },
+    { value: "Special", label: "Especial" },
+  ],
+};
+
 export default function List({
   initialAnimes,
 }: {
@@ -25,30 +80,13 @@ export default function List({
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterValue, setFilterValue] = useState<string>("");
 
-  // valores guardados de filtro
-  const dynamicOptions = useMemo(() => {
-    if (filterCategory === "status") {
-      return [
-        { value: "Watching", label: "Assistindo" },
-        { value: "Completed", label: "Concluído" },
-        { value: "On-Hold", label: "Pausado" },
-        { value: "Dropped", label: "Abandonado" },
-        { value: "Plan to Watch", label: "Planejo ver" },
-      ];
-    }
-    if (filterCategory === "type") {
-      return [
-        { value: "TV", label: "TV" },
-        { value: "Movie", label: "Filme" },
-        { value: "OVA", label: "OVA" },
-        { value: "ONA", label: "Streaming" },
-        { value: "Special", label: "Especial" },
-      ];
-    }
-    return [];
-  }, [filterCategory]);
+  const currentFilterOptions = FILTER_OPTIONS[filterCategory] || [];
 
-  // valores guardados de ordenação, filtra e ordena
+  const handleFilterValueChange = (category: string) => {
+    setFilterCategory(category);
+    setFilterValue("");
+  };
+
   const sortedAnimes = useMemo(() => {
     let animesCopy = [...initialAnimes];
 
@@ -69,20 +107,13 @@ export default function List({
       });
     }
 
-    const PesoStatus: Record<string, number> = {
-      Watching: 1,
-      Completed: 2,
-      "On-Hold": 3,
-      Dropped: 4,
-      "Plan to Watch": 5,
-    };
     return animesCopy.sort((a, b) => {
       switch (sortBy) {
         case "name":
           return a.title.localeCompare(b.title);
         case "status":
-          const pesoA = PesoStatus[a.status] || 999;
-          const pesoB = PesoStatus[b.status] || 999;
+          const pesoA = STATUS_WEIGHTS[a.status] || 999;
+          const pesoB = STATUS_WEIGHTS[b.status] || 999;
           if (pesoA !== pesoB) return pesoA - pesoB;
           return (b.score || 0) - (a.score || 0);
         case "scoreDesc":
@@ -94,12 +125,6 @@ export default function List({
       }
     });
   }, [initialAnimes, sortBy, filterCategory, filterValue]);
-
-  // controle do select filter value
-  const handleFilterValueChange = (category: string) => {
-    setFilterCategory(category);
-    setFilterValue("");
-  };
 
   return (
     <>
@@ -124,12 +149,13 @@ export default function List({
               <option value="type">Tipo</option>
             </select>
           </div>
+
           <div className="d-flex flex-column align-items-center gap-2">
             <label
               htmlFor="filterValueSelect"
               className="form-label w-100 m-0 text-muted fw-semibold"
             >
-              Filtrar por:
+              Opção:
             </label>
             <select
               id="filterValueSelect"
@@ -140,9 +166,9 @@ export default function List({
               disabled={filterCategory === "all"}
             >
               <option value="">
-                {filterCategory === "all" ? "Selecione" : "Selecionae tipo"}
+                {filterCategory === "all" ? "Selecione" : "Selecione o tipo"}
               </option>
-              {dynamicOptions.map((option) => (
+              {currentFilterOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -150,12 +176,13 @@ export default function List({
             </select>
           </div>
         </div>
+
         <div className="d-flex flex-column align-items-center gap-2">
           <label
             htmlFor="sortSelect"
             className="form-label w-100 m-0 text-muted fw-semibold"
           >
-            Sort by:
+            Ordenar por:
           </label>
           <select
             id="sortSelect"
@@ -171,47 +198,31 @@ export default function List({
           </select>
         </div>
       </div>
-      <p>
-        <span>
-          {filterCategory && filterCategory !== "all"
-            ? `Filtrando por: ${filterCategory === "type" ? "Tipo" : "Status"}`
-            : ""}
-        </span>
-        <span>
-          {filterValue && filterCategory !== "all"
-            ? ` - ${
-                filterValue === "all"
-                  ? "Todos"
-                  : filterValue === "Watching"
-                    ? "Assistindo"
-                    : filterValue === "Completed"
-                      ? "Concluído"
-                      : filterValue === "On-Hold"
-                        ? "Pausado"
-                        : filterValue === "Dropped"
-                          ? "Abandonado"
-                          : filterValue === "Plan to Watch"
-                            ? "Planejo ver"
-                            : filterValue === "TV"
-                              ? "TV"
-                              : filterValue === "Movie"
-                                ? "Filme"
-                                : filterValue === "OVA"
-                                  ? "OVA"
-                                  : filterValue === "ONA"
-                                    ? "Streaming"
-                                    : filterValue === "Special"
-                                      ? "Especial"
-                                      : filterValue
-              }`
-            : ""}
-        </span>
-      </p>
-      <p>
-        {filterValue && filterCategory !== "all"
-          ? `Animes: ${sortedAnimes.length}`
-          : ""}
-      </p>
+
+      <div
+        className="mb-4 d-flex justify-content-between align-items-end border-bottom pb-2"
+        style={{ borderColor: "var(--bs-card-border-color)" }}
+      >
+        <div>
+          {filterCategory !== "all" && filterValue && (
+            <p className="m-0 text-muted fw-medium">
+              Filtrando por:{" "}
+              <span className="text-dark">
+                {CATEGORY_LABELS[filterCategory]}
+              </span>{" "}
+              -{" "}
+              <span className="text-primary">
+                {VALUE_LABELS[filterValue] || filterValue}
+              </span>
+            </p>
+          )}
+        </div>
+        <p className="m-0 text-muted fw-semibold">
+          <span className="text-primary fs-5">{sortedAnimes.length}</span>{" "}
+          Animes encontrados
+        </p>
+      </div>
+
       <div className="row g-2">
         {sortedAnimes.map((anime) => (
           <div key={anime.id} className="col-6 col-sm-4 col-md-3 col-lg-2">
@@ -231,7 +242,7 @@ export default function List({
               <div className="card-body d-flex flex-column justify-content-between p-3">
                 <div>
                   <h5
-                    className="card-title text-truncate mb-2"
+                    className="card-title text-truncate mb-2 text-dark"
                     title={anime.title}
                   >
                     {anime.title}
@@ -239,15 +250,7 @@ export default function List({
 
                   <div className="d-flex gap-2 mb-3">
                     <span className="badge bg-dark text-capitalize">
-                      {anime.type === "Movie"
-                        ? "Filme"
-                        : anime.type === "ONA"
-                          ? "Streaming"
-                          : anime.type === "OVA"
-                            ? "DVD"
-                            : anime.type === "Special"
-                              ? "Especial"
-                              : "TV"}
+                      {VALUE_LABELS[anime.type] || anime.type || "Desconhecido"}
                     </span>
                     <span className="badge bg-primary">
                       ★ {anime.score ? anime.score.toFixed(0) : "N/A"}
@@ -258,11 +261,14 @@ export default function List({
                 <div>
                   <div className="d-flex justify-content-between small text-muted mb-1">
                     <span>Progresso:</span>
-                    <span className="text-truncate fw-semibold">
-                      {anime.watchedEpisodes} / {anime.episodes || "??"} ep
+                    <span className="text-truncate fw-semibold text-dark">
+                      {anime.watchedEpisodes} / {anime.episodes || "??"}
                     </span>
                   </div>
-                  <div className="progress bg-dark" style={{ height: "6px" }}>
+                  <div
+                    className="progress"
+                    style={{ height: "6px", backgroundColor: "#EDF2F7" }}
+                  >
                     <div
                       className="progress-bar bg-primary rounded-pill"
                       role="progressbar"
@@ -275,38 +281,18 @@ export default function List({
                   </div>
 
                   <div
-                    className="mt-3 pt-2 border-top border-secondary d-flex justify-content-between align-items-center text-uppercase"
-                    style={{ borderColor: "var(--bs-card-border-color)" }}
+                    className="mt-3 pt-2 border-top d-flex justify-content-between align-items-center text-uppercase"
+                    style={{ borderColor: "rgba(0,0,0,0.05)" }}
                   >
-                    <small className="text-muted text-capitalize">
+                    <small className="text-muted text-capitalize fw-semibold">
                       Status:
                     </small>
                     <span
-                      className={`badge ${
-                        anime.status === "Completed"
-                          ? "bg-info"
-                          : anime.status === "On-Hold"
-                            ? "bg-warning text-dark"
-                            : anime.status === "Dropped"
-                              ? "bg-danger text-white"
-                              : anime.status === "Plan to Watch"
-                                ? "bg-dark text-white"
-                                : anime.status === "Watching"
-                                  ? "bg-success text-white"
-                                  : "bg-warning text-dark"
-                      }`}
+                      className={`badge ${BADGE_CLASSES[anime.status] || "bg-secondary text-white"}`}
                     >
-                      {anime.status === "Completed"
-                        ? "Concluído"
-                        : anime.status === "On-Hold"
-                          ? "Pausado"
-                          : anime.status === "Dropped"
-                            ? "Abandonado"
-                            : anime.status === "Plan to Watch"
-                              ? "Planejo ver"
-                              : anime.status === "Watching"
-                                ? "Assistindo"
-                                : anime.status || "Desconecido"}
+                      {VALUE_LABELS[anime.status] ||
+                        anime.status ||
+                        "Desconhecido"}
                     </span>
                   </div>
                 </div>
@@ -318,13 +304,15 @@ export default function List({
         {sortedAnimes.length === 0 && (
           <div className="col-12 text-center py-5">
             <div
-              className="alert alert-dark border border-danger d-inline-block p-4"
+              className="alert bg-white border shadow-sm d-inline-block p-4"
               role="alert"
             >
-              <h4 className="alert-heading text-danger fw-bold">
+              <h5 className="alert-heading text-muted fw-bold mb-1">
                 Nenhum dado encontrado
-              </h4>
-              <p className="mb-0 text-muted">A sua API não retornou dados.</p>
+              </h5>
+              <p className="mb-0 text-muted small">
+                Tente ajustar os seus filtros.
+              </p>
             </div>
           </div>
         )}
