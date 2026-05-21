@@ -22,8 +22,53 @@ export default function List({
   initialAnimes: ListProps[];
 }) {
   const [sortBy, setSortBy] = useState<string>("status");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterValue, setFilterValue] = useState<string>("");
+
+  // valores guardados de filtro
+  const dynamicOptions = useMemo(() => {
+    if (filterCategory === "status") {
+      return [
+        { value: "Watching", label: "Assistindo" },
+        { value: "Completed", label: "Concluído" },
+        { value: "On-Hold", label: "Pausado" },
+        { value: "Dropped", label: "Abandonado" },
+        { value: "Plan to Watch", label: "Planejo ver" },
+      ];
+    }
+    if (filterCategory === "type") {
+      return [
+        { value: "TV", label: "TV" },
+        { value: "Movie", label: "Filme" },
+        { value: "OVA", label: "OVA" },
+        { value: "ONA", label: "Streaming" },
+        { value: "Special", label: "Especial" },
+      ];
+    }
+    return [];
+  }, [filterCategory]);
+
+  // valores guardados de ordenação, filtra e ordena
   const sortedAnimes = useMemo(() => {
-    const animesCopy = [...initialAnimes];
+    let animesCopy = [...initialAnimes];
+
+    if (filterCategory !== "all" && filterValue) {
+      animesCopy = animesCopy.filter((anime) => {
+        if (filterCategory === "status") {
+          return (
+            anime.status?.trim().toLowerCase() === filterValue.toLowerCase()
+          );
+        }
+        if (filterCategory === "type") {
+          return (
+            anime.type?.toUpperCase().trim() ===
+            filterValue.toUpperCase().trim()
+          );
+        }
+        return true;
+      });
+    }
+
     const PesoStatus: Record<string, number> = {
       Watching: 1,
       Completed: 2,
@@ -48,13 +93,64 @@ export default function List({
           return 0;
       }
     });
-  }, [initialAnimes, sortBy]);
+  }, [initialAnimes, sortBy, filterCategory, filterValue]);
+
+  // controle do select filter value
+  const handleFilterValueChange = (category: string) => {
+    setFilterCategory(category);
+    setFilterValue("");
+  };
 
   return (
     <>
       <div className="d-flex justify-content-between align-items-center mb-4 bg-white p-3 border rounded flex-wrap gap-3">
-        <span>{sortedAnimes.length} animes</span>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-3">
+          <div className="d-flex flex-column align-items-center gap-2">
+            <label
+              htmlFor="filterCategorySelect"
+              className="form-label w-100 m-0 text-muted fw-semibold"
+            >
+              Filtrar por:
+            </label>
+            <select
+              id="filterCategorySelect"
+              className="form-select border-0 bg-light fw-semibold"
+              value={filterCategory}
+              style={{ minWidth: "200px", color: "var(--bs-body-color)" }}
+              onChange={(e) => handleFilterValueChange(e.target.value)}
+            >
+              <option value="all">Todos</option>
+              <option value="status">Status</option>
+              <option value="type">Tipo</option>
+            </select>
+          </div>
+          <div className="d-flex flex-column align-items-center gap-2">
+            <label
+              htmlFor="filterValueSelect"
+              className="form-label w-100 m-0 text-muted fw-semibold"
+            >
+              Filtrar por:
+            </label>
+            <select
+              id="filterValueSelect"
+              className="form-select border-0 bg-light fw-semibold"
+              value={filterValue}
+              style={{ minWidth: "200px", color: "var(--bs-body-color)" }}
+              onChange={(e) => setFilterValue(e.target.value)}
+              disabled={filterCategory === "all"}
+            >
+              <option value="">
+                {filterCategory === "all" ? "Selecione" : "Selecionae tipo"}
+              </option>
+              {dynamicOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="d-flex flex-column align-items-center gap-2">
           <label
             htmlFor="sortSelect"
             className="form-label w-100 m-0 text-muted fw-semibold"
@@ -75,6 +171,47 @@ export default function List({
           </select>
         </div>
       </div>
+      <p>
+        <span>
+          {filterCategory && filterCategory !== "all"
+            ? `Filtrando por: ${filterCategory === "type" ? "Tipo" : "Status"}`
+            : ""}
+        </span>
+        <span>
+          {filterValue && filterCategory !== "all"
+            ? ` - ${
+                filterValue === "all"
+                  ? "Todos"
+                  : filterValue === "Watching"
+                    ? "Assistindo"
+                    : filterValue === "Completed"
+                      ? "Concluído"
+                      : filterValue === "On-Hold"
+                        ? "Pausado"
+                        : filterValue === "Dropped"
+                          ? "Abandonado"
+                          : filterValue === "Plan to Watch"
+                            ? "Planejo ver"
+                            : filterValue === "TV"
+                              ? "TV"
+                              : filterValue === "Movie"
+                                ? "Filme"
+                                : filterValue === "OVA"
+                                  ? "OVA"
+                                  : filterValue === "ONA"
+                                    ? "Streaming"
+                                    : filterValue === "Special"
+                                      ? "Especial"
+                                      : filterValue
+              }`
+            : ""}
+        </span>
+      </p>
+      <p>
+        {filterValue && filterCategory !== "all"
+          ? `Animes: ${sortedAnimes.length}`
+          : ""}
+      </p>
       <div className="row g-2">
         {sortedAnimes.map((anime) => (
           <div key={anime.id} className="col-6 col-sm-4 col-md-3 col-lg-2">
