@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
-import List from "@/components/list";
+import List from "@/components/List";
 
 // Definição da estrutura do objeto Anime que vem do Spring Boot
 interface Anime {
