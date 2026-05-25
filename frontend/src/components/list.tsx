@@ -79,6 +79,7 @@ export default function List({
   const [sortBy, setSortBy] = useState<string>("status");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterValue, setFilterValue] = useState<string>("");
+  const [animes, setAnimes] = useState<ListProps[]>(initialAnimes);
 
   const currentFilterOptions = FILTER_OPTIONS[filterCategory] || [];
 
@@ -88,7 +89,7 @@ export default function List({
   };
 
   const sortedAnimes = useMemo(() => {
-    let animesCopy = [...initialAnimes];
+    let animesCopy = [...animes];
 
     if (filterCategory !== "all" && filterValue) {
       animesCopy = animesCopy.filter((anime) => {
@@ -124,7 +125,38 @@ export default function List({
           return 0;
       }
     });
-  }, [initialAnimes, sortBy, filterCategory, filterValue]);
+  }, [animes, sortBy, filterCategory, filterValue]);
+
+  const handleUpdateAnimeEpisodes = (id: number) => {
+    const updatedAnimes = animes.map((anime) => {
+      if (anime.id !== id) {
+        return anime;
+      }
+      if (anime.episodes && anime.watchedEpisodes >= anime.episodes) {
+        return anime;
+      }
+      const updatedEpisodes = anime.watchedEpisodes + 1;
+      let novoStatus = anime.status;
+      if (anime.episodes && anime.episodes === updatedEpisodes) {
+        window.alert(
+          `anime status de ${anime.title} atualizado para 'Concluído'`,
+        );
+        novoStatus = "Completed";
+      }
+      if (anime.status !== "Watching") {
+        novoStatus = "Watching";
+        window.alert(
+          `anime status de ${anime.title} atualizado para 'Assistindo'`,
+        );
+      }
+      return {
+        ...anime,
+        watchedEpisodes: updatedEpisodes,
+        status: novoStatus,
+      };
+    });
+    setAnimes(updatedAnimes);
+  };
 
   return (
     <>
@@ -217,10 +249,12 @@ export default function List({
             </p>
           )}
         </div>
-        <p className="m-0 text-muted fw-semibold">
-          <span className="text-primary fs-5">{sortedAnimes.length}</span>{" "}
-          Animes encontrados
-        </p>
+        {filterCategory !== "all" && (
+          <p className="m-0 text-muted fw-semibold">
+            <span className="text-primary fs-5">{sortedAnimes.length}</span>{" "}
+            Animes encontrados
+          </p>
+        )}
       </div>
 
       <div className="row g-2">
@@ -261,7 +295,24 @@ export default function List({
                 <div>
                   <div className="d-flex justify-content-between small text-muted mb-1">
                     <span>Progresso:</span>
-                    <span className="text-truncate fw-semibold text-dark">
+                    <span className="text-truncate fw-semibold text-dark d-flex align-items-center gap-1">
+                      <button
+                        className="btn btn-sm btn-outline-success p-0 d-flex align-items-center justify-content-center"
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          fontSize: "12px",
+                          borderRadius: "25px",
+                        }}
+                        title="Mais um episódio assistido"
+                        onClick={() => handleUpdateAnimeEpisodes(anime.id)}
+                        disabled={
+                          !!anime.episodes &&
+                          anime.watchedEpisodes >= anime.episodes
+                        }
+                      >
+                        +
+                      </button>
                       {anime.watchedEpisodes} / {anime.episodes || "??"}
                     </span>
                   </div>
