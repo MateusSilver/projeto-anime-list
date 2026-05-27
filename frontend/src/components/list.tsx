@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/preserve-manual-memoization */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState, useMemo } from "react";
 import AnimeCard from "./AnimeCard";
+import AnimeControls from "./AnimeControls";
 
 export interface ListProps {
   id: number;
@@ -230,83 +232,16 @@ export default function List({
 
   return (
     <>
-      <div className="d-flex justify-content-between align-items-center mb-4 bg-white p-3 border rounded flex-wrap gap-3">
-        <div className="d-flex align-items-center gap-3">
-          <button
-            className="btn btn-primary fw-semibold align-self-start mb-4"
-            onClick={() => setIsPopupOpen(true)}
-          >
-            + Adicionar
-          </button>
-
-          <div className="d-flex flex-column align-items-center gap-2">
-            <label
-              htmlFor="filterCategorySelect"
-              className="form-label w-100 m-0 text-muted fw-semibold"
-            >
-              Filtrar por:
-            </label>
-            <select
-              id="filterCategorySelect"
-              className="form-select border-0 bg-light fw-semibold"
-              value={filterCategory}
-              style={{ minWidth: "200px", color: "var(--bs-body-color)" }}
-              onChange={(e) => handleFilterValueChange(e.target.value)}
-            >
-              <option value="all">Todos</option>
-              <option value="status">Status</option>
-              <option value="type">Tipo</option>
-            </select>
-          </div>
-
-          <div className="d-flex flex-column align-items-center gap-2">
-            <label
-              htmlFor="filterValueSelect"
-              className="form-label w-100 m-0 text-muted fw-semibold"
-            >
-              Opção:
-            </label>
-            <select
-              id="filterValueSelect"
-              className="form-select border-0 bg-light fw-semibold"
-              value={filterValue}
-              style={{ minWidth: "200px", color: "var(--bs-body-color)" }}
-              onChange={(e) => setFilterValue(e.target.value)}
-              disabled={filterCategory === "all"}
-            >
-              <option value="">
-                {filterCategory === "all" ? "Selecione" : "Selecione o tipo"}
-              </option>
-              {currentFilterOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="d-flex flex-column align-items-center gap-2">
-          <label
-            htmlFor="sortSelect"
-            className="form-label w-100 m-0 text-muted fw-semibold"
-          >
-            Ordenar por:
-          </label>
-          <select
-            id="sortSelect"
-            className="form-select border-0 bg-light fw-semibold"
-            value={sortBy}
-            style={{ minWidth: "200px", color: "var(--bs-body-color)" }}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="status">Status</option>
-            <option value="name">Nome</option>
-            <option value="scoreDesc">Maior Nota</option>
-            <option value="scoreAsc">Menor Nota</option>
-          </select>
-        </div>
-      </div>
+      <AnimeControls
+        filterCategory={filterCategory}
+        onFilterCategoryChange={handleFilterValueChange}
+        filterValue={filterValue}
+        onFilterValueChange={setFilterValue}
+        sortBy={sortBy}
+        onSortByChange={setSortBy}
+        onOpenPopUp={() => setIsPopupOpen(true)}
+        filterOptions={FILTER_OPTIONS}
+      />
 
       <div
         className="mb-4 d-flex justify-content-between align-items-end border-bottom pb-2"
