@@ -18,6 +18,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.util.Optional;
 
+import static java.lang.Double.parseDouble;
+
 @Service
 @RequiredArgsConstructor
 public class AnimeImportService {
@@ -65,7 +67,7 @@ public class AnimeImportService {
                     anime.setType(getTagValue("series_type", e));
                     anime.setEpisodes(parseInteger(getTagValue("series_episodes", e)));
                     anime.setWatchedEpisodes(parseInteger(getTagValue("my_watched_episodes", e)));
-                    anime.setScore(parseInteger(getTagValue("my_score", e)));
+                    anime.setScore(parseDouble(getTagValue("my_score", e)));
                     anime.setStatus(getTagValue("my_status", e));
                     anime.setComments(getTagValue("my_comments", e));
 

@@ -4,11 +4,9 @@ import br.com.projeto_anime_list.animelist.model.Anime;
 import br.com.projeto_anime_list.animelist.repository.AnimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.connector.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +24,23 @@ public class AnimeController {
         List<Anime> animes = animerepo.findAll();
 
         return ResponseEntity.ok(animes);
+    }
+
+    // rota POST:
+    @PostMapping
+    public ResponseEntity<Anime> criarAnime(@RequestBody Anime novoAnime){
+        Anime animeSalvo = animerepo.save(novoAnime);
+        return ResponseEntity.status(HttpStatus.CREATED).body(animeSalvo);
+    }
+
+    // rota PUT:
+    @PutMapping("/{id}")
+    public ResponseEntity<Anime> atualizarAnime(@PathVariable Long id, @RequestBody Anime animeAtualizado){
+        return animerepo.findById(id).map(animeExistence -> {
+            animeAtualizado.setId(animeExistence.getId());
+            Anime salvo = animerepo.save(animeAtualizado);
+            return ResponseEntity.ok(salvo);
+        }).orElse(ResponseEntity.notFound().build());
     }
 
 }

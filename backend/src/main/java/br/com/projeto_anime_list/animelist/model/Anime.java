@@ -27,7 +27,7 @@ public class Anime {
     private String type;
     private Integer episodes;
     private Integer watchedEpisodes;
-    private Integer score;
+    private Double score;
     private String status;
 
     @Column(columnDefinition = "TEXT")

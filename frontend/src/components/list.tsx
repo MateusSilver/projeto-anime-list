@@ -126,7 +126,63 @@ export default function List({
     });
   }, [animes, sortBy, filterCategory, filterValue]);
 
-  const handleUpdateAnimeEpisodes = (id: number) => {
+  const handleUpdateAnimeEpisodes = async (id: number) => {
+    console.log(`Incrementando episódios para anime ID: ${id}`);
+    const animeAtual = animes.find((anime) => anime.id === id);
+    if (!animeAtual) return;
+
+    if (
+      animeAtual.episodes &&
+      animeAtual.watchedEpisodes >= animeAtual.episodes
+    ) {
+      return;
+    }
+
+    const updatedEpisodes = animeAtual.watchedEpisodes + 1;
+    let novoStatus = animeAtual.status;
+
+    if (animeAtual.episodes && animeAtual.episodes === updatedEpisodes) {
+      window.alert(
+        `anime status de ${animeAtual.title} atualizado para 'Concluído'`,
+      );
+      novoStatus = "Completed";
+    } else if (animeAtual.status !== "Watching") {
+      window.alert(
+        `anime status de ${animeAtual.title} atualizado para 'Assistindo'`,
+      );
+      novoStatus = "Watching";
+    }
+
+    const animeAtualizado = {
+      ...animeAtual,
+      watchedEpisodes: updatedEpisodes,
+      status: novoStatus,
+    };
+
+    setAnimes(
+      animes.map((anime) => (anime.id === id ? animeAtualizado : anime)),
+    );
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/animes/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(animeAtualizado),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Falha ao persistir dados: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Error updating anime:", error);
+      alert(
+        "Ocorreu um erro ao atualizar o anime. Por favor, tente novamente.",
+      );
+      setAnimes(animes.map((anime) => (anime.id === id ? animeAtual : anime)));
+    }
+
     const updatedAnimes = animes.map((anime) => {
       if (anime.id !== id) {
         return anime;
@@ -157,9 +213,33 @@ export default function List({
     setAnimes(updatedAnimes);
   };
 
-  const handleSaveAnime = (anime: ListProps) => {
+  const handleSaveAnime = async (anime: ListProps) => {
     setAnimes([anime, ...animes]);
     setIsPopupOpen(false);
+    try {
+      const { id, ...dadosParaSalvar } = anime;
+      const response = await fetch("http://localhost:8080/api/animes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dadosParaSalvar),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Falha ao persistir dados: ${response.statusText}`);
+      }
+
+      const animeSalvo = await response.json();
+      setAnimes((prevAnimes) =>
+        prevAnimes.map((a) => (a.id === anime.id ? animeSalvo : a)),
+      );
+    } catch (error) {
+      console.error("Error saving anime:", error);
+      alert("Ocorreu um erro ao salvar o anime. Por favor, tente novamente.");
+      setAnimes((prevAnimes) => prevAnimes.filter((a) => a.id !== anime.id));
+      alert("Ocorreu um erro ao salvar o anime. Por favor, tente novamente.");
+    }
   };
 
   return (
