@@ -42,7 +42,7 @@ export default function AnimeCard({
               {valueLabels[anime.type] || anime.type || "Desconhecido"}
             </span>
             <span className="badge bg-primary">
-              ★ {anime.score ? anime.score.toFixed(0) : "N/A"}
+              ★ {anime.score ? anime.score.toFixed(1) : "N/A"}
             </span>
           </div>
         </div>
