@@ -84,6 +84,11 @@ export default function List() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
+
   useEffect(() => {
     const searchAnimes = async () => {
       const token = localStorage.getItem("token");
@@ -304,10 +309,13 @@ export default function List() {
             Gerenciamento de acervo pessoal e estatísticas
           </p>
         </div>
-        <div className="bg-dark px-4 py-2 rounded-pill border border-secondary">
-          <span className="fw-bold text-primary">{animes.length}</span>{" "}
-          <span className="text-white">títulos catalogados</span>
-        </div>
+
+        <button
+          onClick={handleLogout}
+          className="btn btn-outline-danger fw-semibold rounded-pill px-4"
+        >
+          Sair
+        </button>
       </div>
       <AnimeControls
         filterCategory={filterCategory}
