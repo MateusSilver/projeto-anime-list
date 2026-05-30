@@ -1,5 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState, useMemo } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AnimeCard from "./AnimeCard";
 import AnimeControls from "./AnimeControls";
 import AddAnimeModal from "./AddAnimeModal";
@@ -71,16 +75,53 @@ const FILTER_OPTIONS: Record<string, { value: string; label: string }[]> = {
   ],
 };
 
-export default function List({
-  initialAnimes,
-}: {
-  initialAnimes: ListProps[];
-}) {
+export default function List() {
   const [sortBy, setSortBy] = useState<string>("status");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterValue, setFilterValue] = useState<string>("");
-  const [animes, setAnimes] = useState<ListProps[]>(initialAnimes);
+  const [animes, setAnimes] = useState<ListProps[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const searchAnimes = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:8080/api/animes", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("token");
+          router.push("/login");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`Erro ao buscar animes: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setAnimes(data);
+      } catch (error) {
+        console.error("Erro ao buscar animes em servidor", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    searchAnimes();
+  }, []);
 
   const handleFilterValueChange = (category: string) => {
     setFilterCategory(category);
@@ -126,6 +167,10 @@ export default function List({
     });
   }, [animes, sortBy, filterCategory, filterValue]);
 
+  if (isLoading) {
+    return <div className="text-center mt-5">Carregando acervo</div>;
+  }
+
   const handleUpdateAnimeEpisodes = async (id: number) => {
     console.log(`Incrementando episódios para anime ID: ${id}`);
     const animeAtual = animes.find((anime) => anime.id === id);
@@ -163,11 +208,14 @@ export default function List({
       animes.map((anime) => (anime.id === id ? animeAtualizado : anime)),
     );
 
+    const token = localStorage.getItem("token");
+
     try {
       const response = await fetch(`http://localhost:8080/api/animes/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(animeAtualizado),
       });
@@ -216,12 +264,15 @@ export default function List({
   const handleSaveAnime = async (anime: ListProps) => {
     setAnimes([anime, ...animes]);
     setIsPopupOpen(false);
+    const token = localStorage.getItem("token");
     try {
       const { id, ...dadosParaSalvar } = anime;
+
       const response = await fetch("http://localhost:8080/api/animes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(dadosParaSalvar),
       });
@@ -243,7 +294,21 @@ export default function List({
   };
 
   return (
-    <>
+    <main>
+      <div className="d-flex justify-content-between align-items-center mb-5 border-bottom border-secondary pb-3 flex-wrap">
+        <div>
+          <h1 className="fw-bold text-truncate mb-1">
+            <span className="text-primary">My Anime List Pro</span>
+          </h1>
+          <p className="text-muted m-0">
+            Gerenciamento de acervo pessoal e estatísticas
+          </p>
+        </div>
+        <div className="bg-dark px-4 py-2 rounded-pill border border-secondary">
+          <span className="fw-bold text-primary">{animes.length}</span>{" "}
+          <span className="text-white">títulos catalogados</span>
+        </div>
+      </div>
       <AnimeControls
         filterCategory={filterCategory}
         onFilterCategoryChange={handleFilterValueChange}
@@ -315,6 +380,6 @@ export default function List({
         onSave={handleSaveAnime}
         filterOptions={FILTER_OPTIONS}
       />
-    </>
+    </main>
   );
 }

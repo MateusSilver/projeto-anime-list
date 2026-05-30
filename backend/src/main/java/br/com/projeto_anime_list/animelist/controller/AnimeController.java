@@ -1,11 +1,13 @@
 package br.com.projeto_anime_list.animelist.controller;
 
 import br.com.projeto_anime_list.animelist.model.Anime;
+import br.com.projeto_anime_list.animelist.model.User;
 import br.com.projeto_anime_list.animelist.repository.AnimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,15 +22,20 @@ public class AnimeController {
 
     // rota GET:
     @GetMapping
-    public ResponseEntity<List<Anime>> listarTodos(){
-        List<Anime> animes = animerepo.findAll();
+    public ResponseEntity<List<Anime>> listarAnimesDoUsuario(){
+        User usuarioLogado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return ResponseEntity.ok(animes);
+        List<Anime> animesDoUsuario = animerepo.findByUser(usuarioLogado);
+
+        return ResponseEntity.ok(animesDoUsuario);
     }
 
     // rota POST:
     @PostMapping
     public ResponseEntity<Anime> criarAnime(@RequestBody Anime novoAnime){
+        User logado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        novoAnime.setUser(logado);
         Anime animeSalvo = animerepo.save(novoAnime);
         return ResponseEntity.status(HttpStatus.CREATED).body(animeSalvo);
     }

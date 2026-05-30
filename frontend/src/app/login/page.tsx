@@ -13,14 +13,15 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setErrorMessage("");
-    try {
-      if (!email || !password) {
-        setErrorMessage("Insira email e senha");
-        return;
-      }
 
+    if (!email || !password) {
+      setErrorMessage("Insira email e senha");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
       const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
         headers: {
@@ -34,9 +35,15 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      console.log("Login bem-sucedido:", data);
-      alert(`Bem vindo, ${data.name ? data.name : data.email}!`);
-      router.push("/");
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        alert("Login bem-sucedido!");
+
+        router.push("/");
+      } else {
+        throw new Error("Token de autenticação não recebido");
+      }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       setErrorMessage("Falha no login. Verifique suas credenciais.");
