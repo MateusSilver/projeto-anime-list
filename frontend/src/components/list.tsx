@@ -98,6 +98,12 @@ export default function List() {
         return;
       }
 
+      const imagesEmCache = sessionStorage.getItem("animeImages");
+      if (imagesEmCache) {
+        setAnimes(JSON.parse(imagesEmCache));
+        setIsLoading(false);
+        return;
+      }
       try {
         const response = await fetch("http://localhost:8080/api/animes", {
           method: "GET",
@@ -119,6 +125,7 @@ export default function List() {
 
         const data = await response.json();
         setAnimes(data);
+        sessionStorage.setItem("animeImages", JSON.stringify(data));
       } catch (error) {
         console.error("Erro ao buscar animes em servidor", error);
       } finally {

@@ -19,6 +19,7 @@ import java.util.List;
 
 public class AnimeController {
     private final AnimeRepository animerepo;
+    public record AnimeDetailsDTO(Anime anime, Long globalUserCount){}
 
     // rota GET:
     @GetMapping
@@ -28,6 +29,16 @@ public class AnimeController {
         List<Anime> animesDoUsuario = animerepo.findByUser(usuarioLogado);
 
         return ResponseEntity.ok(animesDoUsuario);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<AnimeDetailsDTO> buscarDetalhes(@PathVariable Long id) {
+        User usuarioLogado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Anime animeFoco = animerepo.findByIdAndUser(id, usuarioLogado).orElseThrow(()-> new RuntimeException("Anime não encontrado."));
+        Long totalUsuarios = animerepo.countByMalId(animeFoco.getMalId());
+
+        return ResponseEntity.ok(new AnimeDetailsDTO(animeFoco ,totalUsuarios));
     }
 
     // rota POST:

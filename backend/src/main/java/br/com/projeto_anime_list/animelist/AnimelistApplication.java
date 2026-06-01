@@ -19,7 +19,7 @@ public class AnimelistApplication {
 		return args -> {
 			// System.out.println("Iniciando script e ETL...");
 			// importService.importFromXml();
-			// imageService.atualizarCapas();
+			//imageService.atualizarCapas();
 		};
 	}
 }
