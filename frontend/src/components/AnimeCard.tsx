@@ -33,7 +33,7 @@ export default function AnimeCard({
 
       <div className="card-body d-flex flex-column justify-content-between p-3">
         <div>
-          <Link href={`/anime/${anime.id}`}>
+          <Link className="text-decoration-none" href={`/anime/${anime.id}`}>
             <h5
               className="card-title text-truncate mb-2 text-dark"
               title={anime.title}
