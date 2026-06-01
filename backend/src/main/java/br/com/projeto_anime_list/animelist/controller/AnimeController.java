@@ -4,7 +4,6 @@ import br.com.projeto_anime_list.animelist.model.Anime;
 import br.com.projeto_anime_list.animelist.model.User;
 import br.com.projeto_anime_list.animelist.repository.AnimeRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,7 +15,6 @@ import java.util.Optional;
 @RestController // Define que esta classe é uma API e devolverá JSON
 @RequestMapping("/api/animes") // O endereço base da URL
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")// API de qualquer origem
 
 public class AnimeController {
     private final AnimeRepository animerepo;
@@ -32,12 +30,21 @@ public class AnimeController {
         return ResponseEntity.ok(animesDoUsuario);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<AnimeDetailsDTO> buscarDetalhes(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarDetalhes(@PathVariable Long id) {
         User usuarioLogado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Anime animeFoco = animerepo.findByIdAndUser(id, usuarioLogado).orElseThrow(()-> new RuntimeException("Anime não encontrado."));
-        Long totalUsuarios = animerepo.countByMalId(animeFoco.getMalId());
+        Optional<Anime> animeOp = animerepo.findByIdAndUser(id, usuarioLogado);
+
+        if(animeOp.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Anime não encontrado");
+        }
+
+        Anime animeFoco = animeOp.get();
+        Long totalUsuarios = 0L;
+        if(animeFoco.getMalId() != null){
+            totalUsuarios = animerepo.countByMalId(animeFoco.getMalId());
+        }
 
         return ResponseEntity.ok(new AnimeDetailsDTO(animeFoco ,totalUsuarios));
     }
@@ -68,7 +75,7 @@ public class AnimeController {
         return animerepo.findByIdAndUser(id, logado).map(animeExistence -> {
             animeAtualizado.setId(animeExistence.getId());
             animeAtualizado.setUser(logado);
-            
+
             Anime salvo = animerepo.save(animeAtualizado);
             return ResponseEntity.ok(salvo);
         }).orElse(ResponseEntity.notFound().build());

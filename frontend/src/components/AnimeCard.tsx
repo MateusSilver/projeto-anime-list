@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ListProps } from "./List";
+import Link from "next/link";
 
 export interface AnimeCardProps {
   anime: ListProps;
@@ -16,26 +17,30 @@ export default function AnimeCard({
 }: AnimeCardProps) {
   return (
     <div className="card anime-card text-white">
-      <div className="card-img-container">
-        <img
-          src={
-            anime.imageUrl ||
-            "https://placehold.co/400x600/EDF2F7/718096?text=Sem+Capa"
-          }
-          alt={anime.title}
-          className="anime-poster"
-          loading="lazy"
-        />
-      </div>
+      <Link href={`/anime/${anime.id}`}>
+        <div className="card-img-container">
+          <img
+            src={
+              anime.imageUrl ||
+              "https://placehold.co/400x600/EDF2F7/718096?text=Sem+Capa"
+            }
+            alt={anime.title}
+            className="anime-poster"
+            loading="lazy"
+          />
+        </div>
+      </Link>
 
       <div className="card-body d-flex flex-column justify-content-between p-3">
         <div>
-          <h5
-            className="card-title text-truncate mb-2 text-dark"
-            title={anime.title}
-          >
-            {anime.title}
-          </h5>
+          <Link href={`/anime/${anime.id}`}>
+            <h5
+              className="card-title text-truncate mb-2 text-dark"
+              title={anime.title}
+            >
+              {anime.title}
+            </h5>
+          </Link>
 
           <div className="d-flex gap-2 mb-3">
             <span className="badge bg-dark text-capitalize">

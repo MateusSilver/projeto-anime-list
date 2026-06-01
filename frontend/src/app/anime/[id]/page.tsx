@@ -23,6 +23,11 @@ export default function AnimeDetailsPage() {
 
   useEffect(() => {
     const fetchAnimeDetails = async () => {
+      if (!animeId) {
+        setError("ID do anime não fornecido.");
+        setIsLoading(false);
+        return;
+      }
       const token = localStorage.getItem("token");
       if (!token) {
         router.push("/login");
