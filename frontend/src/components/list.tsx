@@ -82,6 +82,7 @@ export default function List() {
   const [animes, setAnimes] = useState<ListProps[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
 
   const handleLogout = () => {
@@ -143,6 +144,12 @@ export default function List() {
   const sortedAnimes = useMemo(() => {
     let animesCopy = [...animes];
 
+    if (searchQuery.trim() !== "") {
+      animesCopy = animesCopy.filter((anime) =>
+        anime.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
     if (filterCategory !== "all" && filterValue) {
       animesCopy = animesCopy.filter((anime) => {
         if (filterCategory === "status") {
@@ -177,7 +184,7 @@ export default function List() {
           return 0;
       }
     });
-  }, [animes, sortBy, filterCategory, filterValue]);
+  }, [animes, sortBy, filterCategory, filterValue, searchQuery]);
 
   if (isLoading) {
     return <div className="text-center mt-5">Carregando acervo</div>;
@@ -289,6 +296,12 @@ export default function List() {
         body: JSON.stringify(dadosParaSalvar),
       });
 
+      if (response.status === 409) {
+        const errorMessage = await response.text();
+        alert(errorMessage);
+        throw new Error(errorMessage);
+      }
+
       if (!response.ok) {
         throw new Error(`Falha ao persistir dados: ${response.statusText}`);
       }
@@ -297,6 +310,8 @@ export default function List() {
       setAnimes((prevAnimes) =>
         prevAnimes.map((a) => (a.id === anime.id ? animeSalvo : a)),
       );
+
+      sessionStorage.removeItem("animeImages");
     } catch (error) {
       console.error("Error saving anime:", error);
       alert("Ocorreu um erro ao salvar o anime. Por favor, tente novamente.");
@@ -333,6 +348,8 @@ export default function List() {
         onSortByChange={setSortBy}
         onOpenPopUp={() => setIsPopupOpen(true)}
         filterOptions={FILTER_OPTIONS}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
       />
 
       <div

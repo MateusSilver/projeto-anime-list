@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="Animes")
+@Table(name="Animes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"mal_id", "user_id"})
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

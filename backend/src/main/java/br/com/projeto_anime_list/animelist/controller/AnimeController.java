@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController // Define que esta classe é uma API e devolverá JSON
 @RequestMapping("/api/animes") // O endereço base da URL
@@ -43,8 +44,15 @@ public class AnimeController {
 
     // rota POST:
     @PostMapping
-    public ResponseEntity<Anime> criarAnime(@RequestBody Anime novoAnime){
+    public ResponseEntity<?> criarAnime(@RequestBody Anime novoAnime){
         User logado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(novoAnime.getMalId() != null && novoAnime.getMalId() > 0){
+            Optional<Anime> existente = animerepo.findByIdAndUser(novoAnime.getMalId(), logado);
+            if(existente.isPresent()){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Voce já possui este anime!");
+            }
+        }
 
         novoAnime.setUser(logado);
         Anime animeSalvo = animerepo.save(novoAnime);

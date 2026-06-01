@@ -18,7 +18,7 @@ public class AnimelistApplication {
 	CommandLineRunner runner(AnimeImportService importService, AnimeImageService imageService) {
 		return args -> {
 			// System.out.println("Iniciando script e ETL...");
-			// importService.importFromXml();
+			//importService.importFromXml();
 			//imageService.atualizarCapas();
 		};
 	}
