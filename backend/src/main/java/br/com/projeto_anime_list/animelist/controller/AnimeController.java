@@ -62,8 +62,13 @@ public class AnimeController {
     // rota PUT:
     @PutMapping("/{id}")
     public ResponseEntity<Anime> atualizarAnime(@PathVariable Long id, @RequestBody Anime animeAtualizado){
-        return animerepo.findById(id).map(animeExistence -> {
+        User logado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
+        return animerepo.findByIdAndUser(id, logado).map(animeExistence -> {
             animeAtualizado.setId(animeExistence.getId());
+            animeAtualizado.setUser(logado);
+            
             Anime salvo = animerepo.save(animeAtualizado);
             return ResponseEntity.ok(salvo);
         }).orElse(ResponseEntity.notFound().build());
