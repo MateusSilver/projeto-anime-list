@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public class AnimeController {
     private final AnimeRepository animerepo;
-    public record AnimeDetailsDTO(Anime anime, Long globalUserCount){}
+    public record AnimeDetailsDTO(Anime anime, Long globalUserCount, Double globalAverageScore){}
 
     // rota GET:
     @GetMapping
@@ -42,11 +42,17 @@ public class AnimeController {
 
         Anime animeFoco = animeOp.get();
         Long totalUsuarios = 0L;
+        Double mediaGlobal = 0.0;
         if(animeFoco.getMalId() != null){
             totalUsuarios = animerepo.countByMalId(animeFoco.getMalId());
+
+            Double mediaCalculada = animerepo.getGlobalAverageScoreByMalId(animeFoco.getMalId());
+            if(mediaCalculada != null){
+                mediaGlobal = mediaCalculada;
+            }
         }
 
-        return ResponseEntity.ok(new AnimeDetailsDTO(animeFoco ,totalUsuarios));
+        return ResponseEntity.ok(new AnimeDetailsDTO(animeFoco ,totalUsuarios, mediaGlobal));
     }
 
     // rota POST:

@@ -10,6 +10,7 @@ import { ListProps } from "@/components/List"; // Ajuste o caminho se necessári
 interface AnimeDetailsDTO {
   anime: ListProps & { tags?: string[] };
   globalUserCount: number;
+  globalAverageScore: number;
 }
 
 export default function AnimeDetailsPage() {
@@ -86,7 +87,7 @@ export default function AnimeDetailsPage() {
     );
   }
 
-  const { anime, globalUserCount } = data;
+  const { anime, globalUserCount, globalAverageScore } = data;
 
   return (
     <main className="container py-5">
@@ -96,7 +97,7 @@ export default function AnimeDetailsPage() {
           href="/"
           className="text-decoration-none text-secondary fw-semibold"
         >
-          &larr; Voltar para a minha lista
+          &larr; Voltar
         </Link>
       </div>
 
@@ -116,11 +117,16 @@ export default function AnimeDetailsPage() {
             <p className="text-muted small mb-1 fw-semibold">
               Estatística Global
             </p>
-            <h5 className="fw-bold text-dark m-0">
-              👥 {globalUserCount}{" "}
-              {globalUserCount === 1 ? "utilizador tem" : "utilizadores têm"}{" "}
-              este anime
+            <h5 className="fw-bold text-primary m-0">
+              {globalUserCount}{" "}
+              {globalUserCount === 1 ? "seguidor" : "seguidores"}
             </h5>
+            <p className="text-muted fs-4 mb-0 fw-bold">
+              Média:{" "}
+              <span className="text-primary">
+                {globalAverageScore?.toFixed(2) || "S/N"}
+              </span>
+            </p>
           </div>
         </div>
 
@@ -132,11 +138,10 @@ export default function AnimeDetailsPage() {
             <span className="badge bg-primary fs-6">{anime.status}</span>
             <span className="badge bg-secondary fs-6">{anime.type}</span>
             <span className="badge bg-warning text-dark fs-6">
-              ⭐ Nota: {anime.score || "S/N"}
+              Nota: {anime.score || "S/N"}
             </span>
             <span className="badge bg-info text-dark fs-6">
-              📺 Episódios: {anime.watchedEpisodes || 0} /{" "}
-              {anime.episodes || "?"}
+              Episódios: {anime.watchedEpisodes || 0} / {anime.episodes || "?"}
             </span>
           </div>
 
@@ -166,7 +171,10 @@ export default function AnimeDetailsPage() {
             </h5>
             {anime.comments ? (
               <div className="bg-light p-4 rounded-3 border">
-                <p className="m-0 text-dark" style={{ whiteSpace: "pre-wrap" }}>
+                <p
+                  className="m-0 text-dark fst-italic"
+                  style={{ whiteSpace: "pre-wrap" }}
+                >
                   {anime.comments}
                 </p>
               </div>
