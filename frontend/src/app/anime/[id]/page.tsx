@@ -232,7 +232,7 @@ export default function AnimeDetailsPage() {
         <div className="row g-5">
           {/* Coluna Esquerda: Imagem e Status Global */}
           <div className="col-12 col-md-4">
-            <div className="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+            <div className="border-0 shadow-sm overflow-hidden mb-3">
               <img
                 src={anime.imageUrl || "https://via.placeholder.com/300x400"}
                 alt={anime.title}

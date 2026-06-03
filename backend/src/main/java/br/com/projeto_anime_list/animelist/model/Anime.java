@@ -43,6 +43,9 @@ public class Anime {
     @Column(name = "tag")
     private List<String> tags = new ArrayList<>();
 
+    @Column(name = "is_favorite")
+    private Boolean favorite = false;
+
     @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

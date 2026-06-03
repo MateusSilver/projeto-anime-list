@@ -23,4 +23,11 @@ public interface AnimeRepository extends JpaRepository<Anime, Long>{
 
     @Query("SELECT AVG(a.score) FROM Anime a WHERE a.malId = :malId AND a.score > 0")
     Double getGlobalAverageScoreByMalId(@Param("malId") Long malId);
+
+    long countByUserAndStatus(User user, String status);
+    long countByUser(User user);
+    List<Anime> findByUserAndFavoriteTrue(User user);
+
+    @Query("SELECT COALESCE(SUM(a.watchedEpisodes), 0) FROM Anime a WHERE a.user = :user")
+    Long sumWatchedEpisodesByUser(@Param("user") User user);
 }
