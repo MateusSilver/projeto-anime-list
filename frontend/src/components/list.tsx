@@ -19,6 +19,7 @@ export interface ListProps {
   status: string;
   comments: string;
   imageUrl: string;
+  favorite?: boolean;
 }
 
 // dicionarios globais
@@ -84,6 +85,7 @@ export default function List() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -141,6 +143,38 @@ export default function List() {
     setFilterValue("");
   };
 
+  const handleToggleFavorite = async (id: number) => {
+    setAnimes((prev) =>
+      prev.map((a) =>
+        a.id === id ? { ...a, favorite: !(a.favorite || false) } : a,
+      ),
+    );
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/animes/${id}/favorite`,
+        {
+          method: "PATCH",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!res.ok) throw new Error();
+
+      sessionStorage.removeItem("meusAnimesCache");
+    } catch (error) {
+      setAnimes((prev) =>
+        prev.map((a) =>
+          a.id === id ? { ...a, favorite: !(a.favorite || false) } : a,
+        ),
+      );
+      alert("Falha ao atualizar favorito.");
+    }
+  };
+
   const sortedAnimes = useMemo(() => {
     let animesCopy = [...animes];
 
@@ -148,6 +182,10 @@ export default function List() {
       animesCopy = animesCopy.filter((anime) =>
         anime.title.toLowerCase().includes(searchQuery.toLowerCase()),
       );
+    }
+
+    if (showFavoritesOnly) {
+      animesCopy = animesCopy.filter((anime) => anime.favorite === true);
     }
 
     if (filterCategory !== "all" && filterValue) {
@@ -163,6 +201,7 @@ export default function List() {
             filterValue.toUpperCase().trim()
           );
         }
+
         return true;
       });
     }
@@ -184,7 +223,14 @@ export default function List() {
           return 0;
       }
     });
-  }, [animes, sortBy, filterCategory, filterValue, searchQuery]);
+  }, [
+    animes,
+    sortBy,
+    filterCategory,
+    filterValue,
+    searchQuery,
+    showFavoritesOnly,
+  ]);
 
   if (isLoading) {
     return <div className="text-center mt-5">Carregando acervo</div>;
@@ -350,6 +396,8 @@ export default function List() {
         filterOptions={FILTER_OPTIONS}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        showFavoritesOnly={showFavoritesOnly}
+        onToggleFavoritesOnly={() => setShowFavoritesOnly(!showFavoritesOnly)}
       />
 
       <div
@@ -384,6 +432,7 @@ export default function List() {
             <AnimeCard
               anime={anime}
               onIncrement={handleUpdateAnimeEpisodes}
+              onToggleFavorite={handleToggleFavorite}
               valueLabels={VALUE_LABELS}
               badgeClasses={BADGE_CLASSES}
             />

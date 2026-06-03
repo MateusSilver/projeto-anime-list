@@ -87,4 +87,18 @@ public class AnimeController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
+    @PatchMapping("/{id}/favorite")
+    public ResponseEntity<?> alternarStatusFavorito(@PathVariable Long id) {
+        User logado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return animerepo.findByIdAndUser(id, logado).map(anime -> {
+            // blindado de nulo
+            boolean isAtualmenteFavorito = anime.getFavorite() != null && anime.getFavorite();
+            anime.setFavorite(!isAtualmenteFavorito);
+
+            animerepo.save(anime);
+            return ResponseEntity.ok(anime);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
 }

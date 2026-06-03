@@ -5,6 +5,7 @@ import Link from "next/link";
 export interface AnimeCardProps {
   anime: ListProps;
   onIncrement: (id: number) => void;
+  onToggleFavorite: (id: number) => void;
   valueLabels: Record<string, string>;
   badgeClasses: Record<string, string>;
 }
@@ -12,6 +13,7 @@ export interface AnimeCardProps {
 export default function AnimeCard({
   anime,
   onIncrement,
+  onToggleFavorite,
   valueLabels,
   badgeClasses,
 }: AnimeCardProps) {

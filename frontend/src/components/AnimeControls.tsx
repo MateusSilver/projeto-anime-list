@@ -10,6 +10,8 @@ interface AnimeControlsProps {
 
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
+  showFavoritesOnly: boolean;
+  onToggleFavoritesOnly: () => void;
 }
 
 export default function AnimeControls({
@@ -23,6 +25,8 @@ export default function AnimeControls({
   filterOptions,
   searchQuery,
   onSearchQueryChange,
+  showFavoritesOnly,
+  onToggleFavoritesOnly,
 }: AnimeControlsProps) {
   const currentFilterOptions = filterOptions[filterCategory] || [];
 
