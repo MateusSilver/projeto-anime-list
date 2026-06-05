@@ -42,7 +42,7 @@ export default function AnimeControls({
           style={{ color: "var(--bs-body-color)" }}
         />
       </div>
-      <div className="d-flex justify-content-between align-items-center mb-4 bg-white p-3 border rounded flex-wrap gap-3">
+      <div className="d-flex justify-content-between mb-4 bg-white p-3 border rounded flex-wrap gap-3">
         <div className="d-flex align-items-center gap-3">
           <button
             className="fs-5 px-3 btn btn-primary fw-semibold rounded-pill"
@@ -95,6 +95,17 @@ export default function AnimeControls({
                 </option>
               ))}
             </select>
+          </div>
+          <div className="form-check d-flex align-items-center gap-2 mt-2">
+            <input
+              type="checkbox"
+              id="favoritesOnly"
+              className="form-check-input"
+              name="favoritesOnly"
+              checked={showFavoritesOnly}
+              onChange={onToggleFavoritesOnly}
+            />
+            <label htmlFor="favoritesOnly">Apenas Favoritos</label>
           </div>
         </div>
 

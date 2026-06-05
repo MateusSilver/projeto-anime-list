@@ -20,7 +20,43 @@ export default function AnimeCard({
   return (
     <div className="card anime-card text-white">
       <Link href={`/anime/${anime.id}`}>
-        <div className="card-img-container">
+        <div className="card-img-container position-relative">
+          <button
+            className="btn d-flex align-items-center justify-content-center btn-outline-danger position-absolute top-0 end-0 m-2"
+            style={{
+              top: "10px",
+              right: "10px",
+              borderRadius: "50%",
+              zIndex: 10,
+              backgroundColor: "rgba(0,0,0,0.0)",
+              border: "none",
+              width: "35px",
+              height: "35px",
+              padding: 0,
+              boxShadow: "0 2px 5px rgba(0,0,0,0)",
+              transition: "all 0.3s ease",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              onToggleFavorite(anime.id);
+            }}
+            title={
+              anime.favorite
+                ? "Remover dos favoritos"
+                : "Adicionar aos favoritos"
+            }
+          >
+            <span
+              style={{
+                fontSize: "1.2rem",
+                lineHeight: 1,
+                color: anime.favorite ? "#FFD700" : "#ddd",
+                marginTop: "-2px",
+              }}
+            >
+              {anime.favorite ? "★" : "☆"}
+            </span>
+          </button>
           <img
             src={
               anime.imageUrl ||

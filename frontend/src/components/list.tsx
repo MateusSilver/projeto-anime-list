@@ -101,12 +101,13 @@ export default function List() {
         return;
       }
 
-      const imagesEmCache = sessionStorage.getItem("animeImages");
-      if (imagesEmCache) {
-        setAnimes(JSON.parse(imagesEmCache));
+      const cacheExistente = sessionStorage.getItem("meusAnimesCache");
+      if (cacheExistente) {
+        setAnimes(JSON.parse(cacheExistente));
         setIsLoading(false);
         return;
       }
+
       try {
         const response = await fetch("http://localhost:8080/api/animes", {
           method: "GET",
@@ -128,7 +129,8 @@ export default function List() {
 
         const data = await response.json();
         setAnimes(data);
-        sessionStorage.setItem("animeImages", JSON.stringify(data));
+
+        sessionStorage.setItem("meusAnimesCache", JSON.stringify(data));
       } catch (error) {
         console.error("Erro ao buscar animes em servidor", error);
       } finally {
@@ -136,7 +138,7 @@ export default function List() {
       }
     };
     searchAnimes();
-  }, []);
+  }, [router]);
 
   const handleFilterValueChange = (category: string) => {
     setFilterCategory(category);
@@ -144,11 +146,12 @@ export default function List() {
   };
 
   const handleToggleFavorite = async (id: number) => {
-    setAnimes((prev) =>
-      prev.map((a) =>
-        a.id === id ? { ...a, favorite: !(a.favorite || false) } : a,
-      ),
+    const novosAnimes = animes.map((a) =>
+      a.id === id ? { ...a, favorite: !a.favorite } : a,
     );
+    setAnimes(novosAnimes);
+
+    sessionStorage.setItem("meusAnimesCache", JSON.stringify(novosAnimes));
 
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -163,13 +166,14 @@ export default function List() {
       );
 
       if (!res.ok) throw new Error();
-
-      sessionStorage.removeItem("meusAnimesCache");
     } catch (error) {
-      setAnimes((prev) =>
-        prev.map((a) =>
-          a.id === id ? { ...a, favorite: !(a.favorite || false) } : a,
-        ),
+      const animesRevertidos = animes.map((a) =>
+        a.id === id ? { ...a, favorite: !a.favorite } : a,
+      );
+      setAnimes(animesRevertidos);
+      sessionStorage.setItem(
+        "meusAnimesCache",
+        JSON.stringify(animesRevertidos),
       );
       alert("Falha ao atualizar favorito.");
     }
@@ -178,30 +182,20 @@ export default function List() {
   const sortedAnimes = useMemo(() => {
     let animesCopy = [...animes];
 
+    if (showFavoritesOnly) {
+      animesCopy = animesCopy.filter((anime) => anime.favorite);
+    }
+
     if (searchQuery.trim() !== "") {
       animesCopy = animesCopy.filter((anime) =>
         anime.title.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
-    if (showFavoritesOnly) {
-      animesCopy = animesCopy.filter((anime) => anime.favorite === true);
-    }
-
     if (filterCategory !== "all" && filterValue) {
       animesCopy = animesCopy.filter((anime) => {
-        if (filterCategory === "status") {
-          return (
-            anime.status?.trim().toLowerCase() === filterValue.toLowerCase()
-          );
-        }
-        if (filterCategory === "type") {
-          return (
-            anime.type?.toUpperCase().trim() ===
-            filterValue.toUpperCase().trim()
-          );
-        }
-
+        if (filterCategory === "status") return anime.status === filterValue;
+        if (filterCategory === "type") return anime.type === filterValue;
         return true;
       });
     }
@@ -237,7 +231,6 @@ export default function List() {
   }
 
   const handleUpdateAnimeEpisodes = async (id: number) => {
-    console.log(`Incrementando episódios para anime ID: ${id}`);
     const animeAtual = animes.find((anime) => anime.id === id);
     if (!animeAtual) return;
 
@@ -253,13 +246,10 @@ export default function List() {
 
     if (animeAtual.episodes && animeAtual.episodes === updatedEpisodes) {
       window.alert(
-        `anime status de ${animeAtual.title} atualizado para 'Concluído'`,
+        `Parabéns! O status de ${animeAtual.title} foi atualizado para 'Concluído'`,
       );
       novoStatus = "Completed";
     } else if (animeAtual.status !== "Watching") {
-      window.alert(
-        `anime status de ${animeAtual.title} atualizado para 'Assistindo'`,
-      );
       novoStatus = "Watching";
     }
 
@@ -269,9 +259,12 @@ export default function List() {
       status: novoStatus,
     };
 
-    setAnimes(
-      animes.map((anime) => (anime.id === id ? animeAtualizado : anime)),
+    const animesNovos = animes.map((anime) =>
+      anime.id === id ? animeAtualizado : anime,
     );
+    setAnimes(animesNovos);
+
+    sessionStorage.setItem("meusAnimesCache", JSON.stringify(animesNovos));
 
     const token = localStorage.getItem("token");
 
@@ -294,40 +287,11 @@ export default function List() {
         "Ocorreu um erro ao atualizar o anime. Por favor, tente novamente.",
       );
       setAnimes(animes.map((anime) => (anime.id === id ? animeAtual : anime)));
+      sessionStorage.removeItem("meusAnimesCache");
     }
-
-    const updatedAnimes = animes.map((anime) => {
-      if (anime.id !== id) {
-        return anime;
-      }
-      if (anime.episodes && anime.watchedEpisodes >= anime.episodes) {
-        return anime;
-      }
-      const updatedEpisodes = anime.watchedEpisodes + 1;
-      let novoStatus = anime.status;
-      if (anime.episodes && anime.episodes === updatedEpisodes) {
-        window.alert(
-          `anime status de ${anime.title} atualizado para 'Concluído'`,
-        );
-        novoStatus = "Completed";
-      }
-      if (anime.status !== "Watching") {
-        novoStatus = "Watching";
-        window.alert(
-          `anime status de ${anime.title} atualizado para 'Assistindo'`,
-        );
-      }
-      return {
-        ...anime,
-        watchedEpisodes: updatedEpisodes,
-        status: novoStatus,
-      };
-    });
-    setAnimes(updatedAnimes);
   };
 
   const handleSaveAnime = async (anime: ListProps) => {
-    setAnimes([anime, ...animes]);
     setIsPopupOpen(false);
     const token = localStorage.getItem("token");
     try {
@@ -343,9 +307,7 @@ export default function List() {
       });
 
       if (response.status === 409) {
-        const errorMessage = await response.text();
-        alert(errorMessage);
-        throw new Error(errorMessage);
+        throw new Error("Anime já existe na lista.");
       }
 
       if (!response.ok) {
@@ -353,16 +315,18 @@ export default function List() {
       }
 
       const animeSalvo = await response.json();
-      setAnimes((prevAnimes) =>
-        prevAnimes.map((a) => (a.id === anime.id ? animeSalvo : a)),
-      );
+      const novaLista = [animeSalvo, ...animes];
 
-      sessionStorage.removeItem("animeImages");
+      setAnimes(novaLista);
+
+      sessionStorage.setItem("meusAnimesCache", JSON.stringify(novaLista));
     } catch (error) {
-      console.error("Error saving anime:", error);
-      alert("Ocorreu um erro ao salvar o anime. Por favor, tente novamente.");
-      setAnimes((prevAnimes) => prevAnimes.filter((a) => a.id !== anime.id));
-      alert("Ocorreu um erro ao salvar o anime. Por favor, tente novamente.");
+      console.error("Erro salvando o anime:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Ocorreu um erro ao salvar o anime. Por favor, tente novamente.",
+      );
     }
   };
 

@@ -61,7 +61,7 @@ public class AnimeController {
         User logado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if(novoAnime.getMalId() != null && novoAnime.getMalId() > 0){
-            Optional<Anime> existente = animerepo.findByIdAndUser(novoAnime.getMalId(), logado);
+            Optional<Anime> existente = animerepo.findByMalIdAndUser(novoAnime.getMalId(), logado);
             if(existente.isPresent()){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Voce já possui este anime!");
             }
