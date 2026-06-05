@@ -29,9 +29,17 @@ O projeto é estruturado como um monorepo, facilitando a governança do código 
 - [x] Modelagem de Entidades Relacionais (User <-> Anime).
 - [x] Importação em lote de dados legados (XML para PostgreSQL).
 - [x] Enriquecimento usando jikanAPI para addos adicionais de Títulos.
-- [ ] Implementação de Autenticação JWT (Backend).
-- [ ] Criação do Dashboard Administrativo com Next.js e Bootstrap (Frontend).
-- [ ] Implementação de filtros avançados e busca (Spring Query Methods).
+- [x] Implementação de Autenticação JWT (Backend).
+- [x] Criação do Dashboard Administrativo com Next.js e Bootstrap (Frontend).
+- [x] Implementação de filtros avançados e busca (Spring Query Methods).
+
+## Adicionais
+
+- [] Dark mode
+- [] lucide react para icones
+- [] Feed de usuários por anime
+- [] Comentários em animes listados de outros usuários
+- [] Menu
 
 ## Como rodar o projeto
 
