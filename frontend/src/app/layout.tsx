@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import ThemeToggle from "@/components/ThemeToggle";
 import "./globals.css";
 
 const inter = Inter({
@@ -27,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br" className={`${inter.variable} ${poppins.variable}`}>
-      <body>{children}</body>
+      <body className={inter.className}>
+        {children}
+        <ThemeToggle />
+      </body>
     </html>
   );
 }
