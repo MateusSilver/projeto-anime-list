@@ -192,8 +192,37 @@ export default function AddAnimeModal({
                     }
                   />
                 </div>
+                <div className="col-12 mt-3">
+                  <div className="form-check form-switch p-0 d-flex align-items-center gap-2">
+                    <input
+                      className="form-check-input m-0"
+                      type="checkbox"
+                      role="switch"
+                      id="flexSwitchCheckFavorite"
+                      style={{
+                        width: "40px",
+                        height: "20px",
+                        cursor: "pointer",
+                      }}
+                      checked={newAnime.favorite || false}
+                      onChange={(e) =>
+                        setNewAnime({
+                          ...newAnime,
+                          favorite: e.target.checked,
+                        })
+                      }
+                    />
+                    <label
+                      className="form-check-label fw-bold text-dark"
+                      htmlFor="flexSwitchCheckFavorite"
+                      style={{ cursor: "pointer" }}
+                    >
+                      Marcar como Favorito
+                    </label>
+                  </div>
+                </div>
                 <div className="mb-3 g-2 row">
-                  <div className="col-6">
+                  <div className="col-6 mt-3">
                     <label className="form-label text-muted fw-semibold small">
                       Status
                     </label>
@@ -214,7 +243,7 @@ export default function AddAnimeModal({
                       ))}
                     </select>
                   </div>
-                  <div className="col-6">
+                  <div className="col-6 mt-3">
                     <label className="form-label text-muted fw-semibold small">
                       Tipo
                     </label>
@@ -236,11 +265,13 @@ export default function AddAnimeModal({
                     </select>
                   </div>
                   <div className="col-6 mt-3">
-                    <label>Total de episódios</label>
+                    <label className="form-label text-muted fw-semibold small">
+                      Total de episódios
+                    </label>
                     <input
                       type="number"
                       className="form-control fw-semibold"
-                      placeholder="Digite o total de episódios"
+                      placeholder="00"
                       value={newAnime.episodes ?? ""}
                       onChange={(e) =>
                         setNewAnime({
@@ -254,49 +285,51 @@ export default function AddAnimeModal({
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="form-label text-muted fw-semibold small">
-                    Episódios assistidos
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control fw-semibold"
-                    placeholder="Digite o número de episódios assistidos"
-                    value={newAnime.watchedEpisodes ?? ""}
-                    onChange={(e) =>
-                      setNewAnime({
-                        ...newAnime,
-                        watchedEpisodes:
-                          e.target.value === ""
-                            ? undefined
-                            : parseInt(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="form-label text-muted fw-semibold small mt-3">
-                    Nota (0-10)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="10"
-                    className="form-control fw-semibold"
-                    placeholder="Digite a nota (0-10)"
-                    value={newAnime.score ?? ""}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setNewAnime({
-                        ...newAnime,
-                        score:
-                          val === ""
-                            ? undefined
-                            : Math.max(0, Math.min(10, parseFloat(val))),
-                      });
-                    }}
-                  />
+                <div className="mb-3 g-2 row">
+                  <div className="col-6 mt-3">
+                    <label className="form-label text-muted fw-semibold small">
+                      Episódios assistidos
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control fw-semibold"
+                      placeholder="00"
+                      value={newAnime.watchedEpisodes ?? ""}
+                      onChange={(e) =>
+                        setNewAnime({
+                          ...newAnime,
+                          watchedEpisodes:
+                            e.target.value === ""
+                              ? undefined
+                              : parseInt(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="col-6 mt-3">
+                    <label className="form-label text-muted fw-semibold small">
+                      Nota (0-10)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="10"
+                      className="form-control fw-semibold"
+                      placeholder="Nota (0-10)"
+                      value={newAnime.score ?? ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setNewAnime({
+                          ...newAnime,
+                          score:
+                            val === ""
+                              ? undefined
+                              : Math.max(0, Math.min(10, parseFloat(val))),
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

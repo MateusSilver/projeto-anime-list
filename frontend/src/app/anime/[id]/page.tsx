@@ -255,6 +255,9 @@ export default function AnimeDetailsPage() {
                   {globalAverageScore?.toFixed(2) || "S/N"}
                 </span>
               </p>
+              <span className="text-primary font-italic small mt-2">
+                {anime.favorite ? "Favorito" : ""}
+              </span>
             </div>
           </div>
 
@@ -452,6 +455,40 @@ export default function AnimeDetailsPage() {
                             setEditForm({ ...editForm, title: e.target.value })
                           }
                         />
+                      </div>
+                      <div className="mb-4 mt-2">
+                        <div
+                          className="form-check form-switch p-0 d-flex align-items-center border-none"
+                          style={{ width: "fit-content" }}
+                        >
+                          <input
+                            className=" m-0 ms-2"
+                            type="checkbox"
+                            role="switch"
+                            id="editFavoriteSwitch"
+                            style={{
+                              width: "40px",
+                              height: "20px",
+                              cursor: "pointer",
+                            }}
+                            checked={editForm.favorite || false}
+                            onChange={(e) =>
+                              setEditForm({
+                                ...editForm,
+                                favorite: e.target.checked,
+                              })
+                            }
+                          />
+                          <label
+                            className="form-check-label fw-semibold pe-3"
+                            htmlFor="editFavoriteSwitch"
+                            style={{
+                              cursor: "pointer",
+                            }}
+                          >
+                            É um Favorito
+                          </label>
+                        </div>
                       </div>
 
                       <div className="row g-3 mb-3">
