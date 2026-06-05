@@ -32,6 +32,7 @@ export default function AnimeDetailsPage() {
 
   // modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [editForm, setEditForm] = useState<
     Partial<ListProps & { tags: string[] }>
   >({});
@@ -232,7 +233,12 @@ export default function AnimeDetailsPage() {
         <div className="row g-5">
           {/* Coluna Esquerda: Imagem e Status Global */}
           <div className="col-12 col-md-4">
-            <div className="border-0 shadow-sm overflow-hidden mb-3">
+            <div
+              className="border-0 shadow-sm overflow-hidden mb-3"
+              style={{ cursor: "zoom-in" }}
+              onClick={() => setIsImageModalOpen(true)}
+              title="Clique para ampliar a imagem"
+            >
               <img
                 src={anime.imageUrl || "https://via.placeholder.com/300x400"}
                 alt={anime.title}
@@ -332,8 +338,7 @@ export default function AnimeDetailsPage() {
             </div>
           </div>
         </div>
-        {/* MODAL DE EDIÇÃO */}
-        {/* MODAL DE EDIÇÃO */}
+        {/* MODAL DE IMAGEM */}
         {isModalOpen && (
           <div
             className="modal fade show d-block"
@@ -358,7 +363,6 @@ export default function AnimeDetailsPage() {
 
                 <div className="modal-body p-4">
                   <div className="row g-4">
-                    {/* Coluna Esquerda: Imagem e URL */}
                     {/* Coluna Esquerda: Imagem, Jikan API e URL */}
                     <div className="col-12 col-md-4 d-flex flex-column align-items-center justify-content-start bg-light p-4 border-0 rounded-4">
                       {editForm.imageUrl ? (
@@ -649,6 +653,58 @@ export default function AnimeDetailsPage() {
                   >
                     {isSaving ? "Salvando..." : "Salvar"}
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {isImageModalOpen && (
+          <div
+            className="modal fade show d-block"
+            tabIndex={-1}
+            style={{
+              backgroundColor: "rgba(0,0,0,0.9)",
+              zIndex: 1050,
+              backdropFilter: "blur(8px)",
+            }}
+            onClick={() => setIsImageModalOpen(false)}
+          >
+            <div
+              className="modal-dialog modal-dialog-centered"
+              style={{ maxWidth: "90vw", height: "90vh", margin: "auto" }}
+            >
+              <div className="modal-content bg-transparent border-0 shadow-none w-100 h-100">
+                <div
+                  className="modal-header border-0 pb-0 justify-content-end position-absolute top-0 end-0"
+                  style={{ zIndex: 1 }}
+                >
+                  <button
+                    type="button"
+                    className="btn-close bg-white p-3 rounded-circle text-dark"
+                    onClick={() => setIsImageModalOpen(false)}
+                    title="Fechar"
+                  ></button>
+                </div>
+
+                <div className="modal-body text-center p-0 d-flex justify-content-center align-items-center h-100">
+                  <img
+                    src={
+                      anime.imageUrl ||
+                      "https://placehold.co/400x600/EDF2F7/718096?text=Sem+Capa"
+                    }
+                    alt={anime.title}
+                    className="img-fluid rounded-none shadow-lg"
+                    style={{
+                      maxHeight: "90vh",
+                      maxWidth: "100%",
+                      objectFit: "contain",
+                      cursor: "zoom-out",
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsImageModalOpen(false);
+                    }}
+                  />
                 </div>
               </div>
             </div>
