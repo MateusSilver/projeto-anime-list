@@ -1,6 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AnimeCard from "./AnimeCard";
@@ -85,6 +87,10 @@ export default function List() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
   const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
+  const [userBasicInfo, setUserBasicInfo] = useState<{
+    name: string;
+    image: string;
+  } | null>(null);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -92,7 +98,7 @@ export default function List() {
   };
 
   useEffect(() => {
-    const searchAnimes = async () => {
+    const loadAllData = async () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -100,43 +106,61 @@ export default function List() {
         return;
       }
 
-      const cacheExistente = sessionStorage.getItem("meusAnimesCache");
-      if (cacheExistente) {
-        setAnimes(JSON.parse(cacheExistente));
-        setIsLoading(false);
-        return;
-      }
+      //Buscar o Perfil
+      const fetchProfile = async () => {
+        try {
+          const res = await fetch("http://localhost:8080/api/users/profile", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setUserBasicInfo({ name: data.name, image: data.profileImageUrl });
+          }
+        } catch (error) {
+          console.error(
+            "Erro ao carregar mini-perfil (não afeta os animes)",
+            error,
+          );
+        }
+      };
 
-      try {
-        const response = await fetch("http://localhost:8080/api/animes", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.status === 401 || response.status === 403) {
-          localStorage.removeItem("token");
-          router.push("/login");
-          return;
+      //Buscar os Animes
+      const fetchAnimes = async () => {
+        const cacheExistente = sessionStorage.getItem("meusAnimesCache");
+        if (cacheExistente) {
+          setAnimes(JSON.parse(cacheExistente));
+          setIsLoading(false);
+          return; // Se tem cache, para aqui e nem faz o fetch
         }
 
-        if (!response.ok) {
-          throw new Error(`Erro ao buscar animes: ${response.statusText}`);
+        try {
+          const res = await fetch("http://localhost:8080/api/animes", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem("token");
+            router.push("/login");
+            return;
+          }
+
+          if (!res.ok) throw new Error("Falha no servidor");
+
+          const data = await res.json();
+          setAnimes(data);
+          sessionStorage.setItem("meusAnimesCache", JSON.stringify(data));
+        } catch (error) {
+          console.error("Erro fatal ao carregar animes", error);
+        } finally {
+          setIsLoading(false);
         }
+      };
 
-        const data = await response.json();
-        setAnimes(data);
-
-        sessionStorage.setItem("meusAnimesCache", JSON.stringify(data));
-      } catch (error) {
-        console.error("Erro ao buscar animes em servidor", error);
-      } finally {
-        setIsLoading(false);
-      }
+      fetchProfile();
+      fetchAnimes();
     };
-    searchAnimes();
+
+    loadAllData();
   }, [router]);
 
   const handleFilterValueChange = (category: string) => {
@@ -340,13 +364,39 @@ export default function List() {
             Gerenciamento de acervo pessoal e estatísticas
           </p>
         </div>
+        <div className="d-flex flex-row gap-2">
+          <Link href="/profile" className="text-decoration-none">
+            <div
+              className="d-flex align-items-center gap-2 px-3 py-2 border border-secondary-subtle rounded-pill bg-body-tertiary shadow-sm"
+              style={{ transition: "all 0.2s", cursor: "pointer" }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.transform = "scale(1.05)")
+              }
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              title="Acessar Meu Perfil"
+            >
+              <img
+                src={
+                  userBasicInfo?.image ||
+                  "https://placehold.co/150x150?text=User"
+                }
+                alt="Avatar"
+                className="rounded-circle border border-2 border-primary"
+                style={{ width: "35px", height: "35px", objectFit: "cover" }}
+              />
+              <span className="fw-bold text-body m-0 d-none d-sm-block">
+                {userBasicInfo?.name || "Meu Perfil"}
+              </span>
+            </div>
+          </Link>
 
-        <button
-          onClick={handleLogout}
-          className="btn btn-outline-danger fw-semibold rounded-pill px-4"
-        >
-          Sair
-        </button>
+          <button
+            onClick={handleLogout}
+            className="btn btn-outline-danger fw-semibold rounded-pill px-4"
+          >
+            Sair
+          </button>
+        </div>
       </div>
       <AnimeControls
         filterCategory={filterCategory}

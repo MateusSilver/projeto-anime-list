@@ -35,7 +35,7 @@ O projeto é estruturado como um monorepo, facilitando a governança do código 
 
 ## Adicionais
 
-- [] Dark mode
+- [x] Dark mode
 - [] lucide react para icones
 - [] Feed de usuários por anime
 - [] Comentários em animes listados de outros usuários
