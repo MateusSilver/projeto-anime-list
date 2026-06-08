@@ -28,7 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br" className={`${inter.variable} ${poppins.variable}`}>
-      <body className={inter.className}>
+      <body
+        className={`${inter.className} bg-body-secondary text-body-secondary`}
+      >
         {children}
         <ThemeToggle />
       </body>

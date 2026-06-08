@@ -1,6 +1,10 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
-:root {
+/* =========================================
+   MODO CLARO (As suas cores originais)
+   ========================================= */
+:root,
+[data-bs-theme="light"] {
   --bs-primary: #e05d5d;
   --bs-primary-rgb: 224, 93, 93;
 
@@ -10,14 +14,41 @@
   --bs-card-bg: #fff;
   --bs-card-border-color: rgba(0, 0, 0, 0.04);
   --bs-card-border-radius: 12px;
+
+  --custom-title-color: #1a202c;
+  --custom-muted-color: #4a5568; /* Um tom ligeiramente mais suave para o muted */
 }
 
+/* =========================================
+   MODO ESCURO (A inversão inteligente)
+   ========================================= */
+[data-bs-theme="dark"] {
+  /* O primário (vermelho) mantém-se igual! */
+
+  --bs-body-bg: #1a202c; /* Fundo geral escuro */
+  --bs-body-color: #f4f6f8; /* Texto geral claro */
+
+  --bs-card-bg: #2d3748; /* Cartões com tom escuro elegante */
+  --bs-card-border-color: rgba(255, 255, 255, 0.05);
+
+  --custom-title-color: #ffffff;
+  --custom-muted-color: #a0aec0;
+}
+
+/* =========================================
+   ESTILOS GLOBAIS
+   ========================================= */
 body {
   font-family:
     var(--font-inter),
     system-ui,
     -apple-system,
     sans-serif !important;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease; /* Transição suave de temas */
 }
 
 h1,
@@ -32,23 +63,33 @@ h6,
     system-ui,
     -apple-system,
     sans-serif !important;
-  color: #1a202c;
+  color: var(--custom-title-color); /* Usa a variável que muda com o tema */
   font-weight: 700;
+  transition: color 0.3s ease;
 }
 
-.text-muted,
+.text-muted {
+  color: var(--custom-muted-color) !important;
+}
+
+/*cor fixa do text-truncate para ele não bugar links */
 .text-truncate {
-  color: #1a202c !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .anime-card {
+  background-color: var(--bs-card-bg); /* fundo do cartão */
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background-color 0.3s ease;
   overflow: hidden;
   height: 100%;
   border: 1px solid var(--bs-card-border-color);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  border-radius: var(--bs-card-border-radius);
 }
 
 .anime-card:hover {
@@ -60,11 +101,12 @@ h6,
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #edf2f7;
+  /* fundo fixo por uma opacidade para ficar bom em ambos os modos */
+  background-color: rgba(0, 0, 0, 0.03);
   width: 100%;
   aspect-ratio: 3/4;
   overflow: hidden;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--bs-card-border-color);
 }
 
 .anime-poster {

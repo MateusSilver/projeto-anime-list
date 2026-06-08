@@ -18,7 +18,7 @@ export default function AnimeCard({
   badgeClasses,
 }: AnimeCardProps) {
   return (
-    <div className="card anime-card text-white">
+    <div className="card anime-card bg-body text-body-secondary">
       <Link href={`/anime/${anime.id}`}>
         <div className="card-img-container position-relative">
           <button
@@ -28,12 +28,12 @@ export default function AnimeCard({
               right: "10px",
               borderRadius: "50%",
               zIndex: 10,
-              backgroundColor: "rgba(0,0,0,0.0)",
+              backgroundColor: "rgba(0,0,0,0.5)",
               border: "none",
               width: "35px",
               height: "35px",
               padding: 0,
-              boxShadow: "0 2px 5px rgba(0,0,0,0)",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
               transition: "all 0.3s ease",
             }}
             onClick={(e) => {
@@ -71,9 +71,12 @@ export default function AnimeCard({
 
       <div className="card-body d-flex flex-column justify-content-between p-3">
         <div>
-          <Link className="text-decoration-none" href={`/anime/${anime.id}`}>
+          <Link
+            className="text-decoration-none link-body-emphasis"
+            href={`/anime/${anime.id}`}
+          >
             <h5
-              className="card-title text-truncate mb-2 text-dark"
+              className="text-reset card-title text-truncate mb-2 fw-bold"
               title={anime.title}
             >
               {anime.title}
@@ -81,7 +84,7 @@ export default function AnimeCard({
           </Link>
 
           <div className="d-flex gap-2 mb-3">
-            <span className="badge bg-dark text-capitalize">
+            <span className="badge bg-body-secondary text-body text-capitalize">
               {valueLabels[anime.type] || anime.type || "Desconhecido"}
             </span>
             <span className="badge bg-primary">
@@ -91,9 +94,9 @@ export default function AnimeCard({
         </div>
 
         <div>
-          <div className="d-flex justify-content-between small text-muted mb-1">
-            <span>Progresso:</span>
-            <span className="text-truncate fw-semibold text-dark d-flex align-items-center gap-1">
+          <div className="d-flex justify-content-between small text-body-secondary mb-1">
+            <span className="fw-semibold">Progresso:</span>
+            <span className="fw-semibold text-body d-flex align-items-center gap-1">
               <button
                 className="btn btn-sm btn-outline-success p-0 d-flex align-items-center justify-content-center"
                 style={{
@@ -113,10 +116,7 @@ export default function AnimeCard({
               {anime.watchedEpisodes} / {anime.episodes || "??"}
             </span>
           </div>
-          <div
-            className="progress"
-            style={{ height: "6px", backgroundColor: "#EDF2F7" }}
-          >
+          <div className="progress bg-body-secondary" style={{ height: "6px" }}>
             <div
               className="progress-bar bg-primary rounded-pill"
               role="progressbar"
@@ -129,14 +129,14 @@ export default function AnimeCard({
           </div>
 
           <div
-            className="mt-3 pt-2 border-top d-flex justify-content-between align-items-center text-uppercase"
+            className="mt-3 pt-2 border-top d-flex justify-content-between align-items-center  text-uppercase"
             style={{ borderColor: "rgba(0,0,0,0.05)" }}
           >
-            <small className="text-muted text-capitalize fw-semibold">
+            <small className="text-body-secondary text-capitalize fw-semibold">
               Status:
             </small>
             <span
-              className={`badge ${badgeClasses[anime.status] || "bg-secondary text-white"}`}
+              className={`badge ${badgeClasses[anime.status] || "bg-secondary text-body"}`}
             >
               {valueLabels[anime.status] || anime.status || "Desconhecido"}
             </span>

@@ -369,12 +369,8 @@ export default function List() {
       >
         <div>
           {filterCategory !== "all" && filterValue && (
-            <p className="m-0 text-muted fw-medium">
-              Filtrando por:{" "}
-              <span className="text-dark">
-                {CATEGORY_LABELS[filterCategory]}
-              </span>{" "}
-              -{" "}
+            <p className="m-0 text-body-secondary fw-medium">
+              Filtrando por: <span>{CATEGORY_LABELS[filterCategory]}</span> -{" "}
               <span className="text-primary">
                 {VALUE_LABELS[filterValue] || filterValue}
               </span>
@@ -382,7 +378,7 @@ export default function List() {
           )}
         </div>
         {filterCategory !== "all" && (
-          <p className="m-0 text-muted fw-semibold">
+          <p className="m-0 text-body-secondary fw-semibold">
             <span className="text-primary fs-5">{sortedAnimes.length}</span>{" "}
             Animes encontrados
           </p>
@@ -405,13 +401,13 @@ export default function List() {
         {sortedAnimes.length === 0 && (
           <div className="col-12 text-center py-5">
             <div
-              className="alert bg-white border shadow-sm d-inline-block p-4"
+              className="alert bg-body border shadow-sm d-inline-block p-4"
               role="alert"
             >
-              <h5 className="alert-heading text-muted fw-bold mb-1">
+              <h5 className="alert-heading text-body-secondary fw-bold mb-1">
                 Nenhum dado encontrado
               </h5>
-              <p className="mb-0 text-muted small">
+              <p className="mb-0 text-body-secondary small">
                 Tente ajustar os seus filtros.
               </p>
             </div>

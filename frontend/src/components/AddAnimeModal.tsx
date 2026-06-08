@@ -107,9 +107,9 @@ export default function AddAnimeModal({
       }}
     >
       <div className="modal-dialog modal-dialog-centered modal-lg">
-        <div className="modal-content border-0 shadow-lg">
-          <div className="modal-header border-bottom-0 bg-light pb-0">
-            <h5 className="modal-title fw-semibold text-dark">
+        <div className="bg-body modal-content border-0 shadow-lg">
+          <div className="bg-body modal-header border-bottom-0 bg-light pb-0">
+            <h5 className="modal-title fw-semibold text-body">
               Catalogar novo Anime
             </h5>
             <button
@@ -120,7 +120,7 @@ export default function AddAnimeModal({
           </div>
           <div className="modal-body p-4">
             <div className="row g-4">
-              <div className="col-12 col-md-6 d-flex flex-column align-items-center justify-content-center bg-light p-3 border-0">
+              <div className="col-12 col-md-6 d-flex flex-column align-items-center justify-content-center bg-body-secondary p-3 border-0 rounded">
                 {newAnime.imageUrl ? (
                   <img
                     src={newAnime.imageUrl}
@@ -137,18 +137,18 @@ export default function AddAnimeModal({
                       opacity: 0.2,
                     }}
                   >
-                    <div className="text-center text-white fw-semibold">
+                    <div className="text-center text-body fw-semibold">
                       Imagem não disponível
                     </div>
                   </div>
                 )}
-                <label className="form-label text-muted fw-semibold small w-100">
+                <label className="form-label text-body-secondary fw-semibold small w-100">
                   Anime List ID
                 </label>
                 <div className="input-group">
                   <input
                     type="text"
-                    className="form-control fw-semibold"
+                    className="bg-body text-body form-control fw-semibold"
                     placeholder="0000"
                     value={newAnime.malId || ""}
                     onChange={(e) =>
@@ -159,7 +159,7 @@ export default function AddAnimeModal({
                     }
                   />
                   <button
-                    className="btn btn-dark fw-semibold"
+                    className="btn btn-primary fw-semibold"
                     type="button"
                     onClick={fetchJikanData}
                     disabled={isFetching}
@@ -168,7 +168,7 @@ export default function AddAnimeModal({
                   </button>
                 </div>
                 <small
-                  className="text-muted mt-2 text-center"
+                  className="text-body mt-2 text-center"
                   style={{ fontSize: "11px" }}
                 >
                   Digite o ID do anime no MyAnimeList para buscar seus dados.
@@ -176,12 +176,12 @@ export default function AddAnimeModal({
               </div>
               <div className="col-12 col-md-6">
                 <div className="mb-3">
-                  <label className="form-label text-muted fw-semibold">
+                  <label className="form-label text-body-secondary fw-semibold">
                     Título
                   </label>
                   <input
                     type="text"
-                    className="form-control fw-semibold"
+                    className="bg-body-secondary text-body form-control fw-semibold"
                     placeholder="Digite o título do anime"
                     value={newAnime.title || ""}
                     onChange={(e) =>
@@ -195,7 +195,7 @@ export default function AddAnimeModal({
                 <div className="col-12 mt-3">
                   <div className="form-check form-switch p-0 d-flex align-items-center gap-2">
                     <input
-                      className="form-check-input m-0"
+                      className="form-check-input m-0 bg-body-secondary"
                       type="checkbox"
                       role="switch"
                       id="flexSwitchCheckFavorite"
@@ -213,7 +213,7 @@ export default function AddAnimeModal({
                       }
                     />
                     <label
-                      className="form-check-label fw-bold text-dark"
+                      className="text-body-secondary form-check-label fw-bold text-dark"
                       htmlFor="flexSwitchCheckFavorite"
                       style={{ cursor: "pointer" }}
                     >
@@ -223,11 +223,11 @@ export default function AddAnimeModal({
                 </div>
                 <div className="mb-3 g-2 row">
                   <div className="col-6 mt-3">
-                    <label className="form-label text-muted fw-semibold small">
+                    <label className="form-label text-body-secondary fw-semibold small">
                       Status
                     </label>
                     <select
-                      className="form-select fw-semibold"
+                      className="bg-body-secondary text-body-secondary form-select fw-semibold"
                       value={newAnime.status}
                       onChange={(e) =>
                         setNewAnime({
@@ -244,11 +244,11 @@ export default function AddAnimeModal({
                     </select>
                   </div>
                   <div className="col-6 mt-3">
-                    <label className="form-label text-muted fw-semibold small">
+                    <label className="form-label text-body-secondary fw-semibold small">
                       Tipo
                     </label>
                     <select
-                      className="form-select fw-semibold"
+                      className="bg-body-secondary text-body-secondary form-select fw-semibold"
                       value={newAnime.type}
                       onChange={(e) =>
                         setNewAnime({
@@ -265,12 +265,12 @@ export default function AddAnimeModal({
                     </select>
                   </div>
                   <div className="col-6 mt-3">
-                    <label className="form-label text-muted fw-semibold small">
+                    <label className="form-label text-body-secondary fw-semibold small">
                       Total de episódios
                     </label>
                     <input
                       type="number"
-                      className="form-control fw-semibold"
+                      className="bg-body-secondary text-body form-control fw-semibold"
                       placeholder="00"
                       value={newAnime.episodes ?? ""}
                       onChange={(e) =>
@@ -287,12 +287,12 @@ export default function AddAnimeModal({
                 </div>
                 <div className="mb-3 g-2 row">
                   <div className="col-6 mt-3">
-                    <label className="form-label text-muted fw-semibold small">
+                    <label className="form-label text-body-secondary fw-semibold small">
                       Episódios assistidos
                     </label>
                     <input
                       type="number"
-                      className="form-control fw-semibold"
+                      className="bg-body-secondary text-body form-control fw-semibold"
                       placeholder="00"
                       value={newAnime.watchedEpisodes ?? ""}
                       onChange={(e) =>
@@ -307,7 +307,7 @@ export default function AddAnimeModal({
                     />
                   </div>
                   <div className="col-6 mt-3">
-                    <label className="form-label text-muted fw-semibold small">
+                    <label className="form-label text-body-secondary fw-semibold small">
                       Nota (0-10)
                     </label>
                     <input
@@ -315,7 +315,7 @@ export default function AddAnimeModal({
                       step="0.1"
                       min="0"
                       max="10"
-                      className="form-control fw-semibold"
+                      className="bg-body-secondary text-body form-control fw-semibold"
                       placeholder="Nota (0-10)"
                       value={newAnime.score ?? ""}
                       onChange={(e) => {

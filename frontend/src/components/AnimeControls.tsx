@@ -32,17 +32,17 @@ export default function AnimeControls({
 
   return (
     <>
-      <div className="bg-white p-3 rounded-3 border mb-4">
+      <div className="bg-body p-3 rounded-3 border mb-4">
         <input
           type="text"
-          className="form-control w-100 w-md-50 border-0 bg-white fw-semibold"
+          className="form-control w-100 w-md-50 border-0 bg-body fw-semibold"
           placeholder="Pesquisar por nome..."
           value={searchQuery}
           onChange={(e) => onSearchQueryChange(e.target.value)}
           style={{ color: "var(--bs-body-color)" }}
         />
       </div>
-      <div className="d-flex justify-content-between mb-4 bg-white p-3 border rounded flex-wrap gap-3">
+      <div className="d-flex justify-content-between mb-4 bg-body p-3 border rounded flex-wrap gap-3">
         <div className="d-flex align-items-center gap-3">
           <button
             className="fs-5 px-3 btn btn-primary fw-semibold rounded-pill"
@@ -54,13 +54,13 @@ export default function AnimeControls({
           <div className="d-flex flex-column align-items-center gap-2">
             <label
               htmlFor="filterCategorySelect"
-              className="form-label w-100 m-0 text-muted fw-semibold"
+              className="form-label w-100 m-0 text-body-secondary fw-semibold"
             >
               Filtrar por:
             </label>
             <select
               id="filterCategorySelect"
-              className="form-select border-0 bg-light fw-semibold"
+              className="form-select border-0 bg-body-secondary fw-semibold"
               value={filterCategory}
               style={{ minWidth: "200px", color: "var(--bs-body-color)" }}
               onChange={(e) => onFilterCategoryChange(e.target.value)}
@@ -80,7 +80,7 @@ export default function AnimeControls({
             </label>
             <select
               id="filterValueSelect"
-              className="form-select border-0 bg-light fw-semibold"
+              className="form-select border-0 bg-body-secondary fw-semibold"
               value={filterValue}
               style={{ minWidth: "200px", color: "var(--bs-body-color)" }}
               onChange={(e) => onFilterValueChange(e.target.value)}
@@ -118,7 +118,7 @@ export default function AnimeControls({
           </label>
           <select
             id="sortSelect"
-            className="form-select border-0 bg-light fw-semibold"
+            className="form-select border-0 bg-body-secondary fw-semibold"
             value={sortBy}
             style={{ minWidth: "200px", color: "var(--bs-body-color)" }}
             onChange={(e) => onSortByChange(e.target.value)}

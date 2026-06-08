@@ -134,17 +134,17 @@ export default function ProfilePage() {
         {/* COLUNA ESQUERDA: Exibição da Foto e Formulário */}
         <div className="col-12 col-lg-4">
           {/* Cartão de Identificação */}
-          <div className="card border-0 shadow-sm rounded-4 p-4 text-center mb-4 bg-light">
+          <div className="card border-0 rounded-4 p-4 text-center mb-4 bg-body">
             <img
               src={
                 userProfile.profileImageUrl ||
                 "https://placehold.co/150x150?text=User"
               }
               alt="Avatar de perfil"
-              className="rounded-circle mb-3 border border-3 border-white shadow-sm mx-auto"
+              className="rounded-circle mb-3 border border-3 border-body mx-auto"
               style={{ width: "120px", height: "120px", objectFit: "cover" }}
             />
-            <h4 className="fw-bold m-0 text-dark">{userProfile.name}</h4>
+            <h4 className="fw-bold m-0 text-body">{userProfile.name}</h4>
             <p className="text-muted small m-0">{userProfile.email}</p>
           </div>
 
@@ -211,58 +211,72 @@ export default function ProfilePage() {
         {/* COLUNA DIREITA: Estatísticas e Favoritos */}
         <div className="col-12 col-lg-8">
           {/* PAINEL DE ESTATÍSTICAS */}
-          <table className="table mb-4">
-            <tbody>
-              <tr>
-                <td className="p-2">Total</td>
-                <td className="p-2 fw-bold">
-                  {userProfile.totalAnimes
-                    ? userProfile.totalAnimes.toLocaleString("pt-BR")
-                    : 0}
-                </td>
-              </tr>
-              <tr>
-                <td className="p-2">Completos</td>
-                <td className="p-2 fw-bold">
-                  {userProfile.completed
-                    ? userProfile.completed.toLocaleString("pt-BR")
-                    : 0}
-                </td>
-              </tr>
-              <tr>
-                <td className="p-2">Assistindo</td>
-                <td className="p-2 fw-bold">
-                  {userProfile.watching
-                    ? userProfile.watching.toLocaleString("pt-BR")
-                    : 0}
-                </td>
-              </tr>
-              <tr>
-                <td className="p-2">Pausados</td>
-                <td className="p-2 fw-bold">
-                  {userProfile.onHold
-                    ? userProfile.onHold.toLocaleString("pt-BR")
-                    : 0}
-                </td>
-              </tr>
-              <tr>
-                <td className="p-2">Abandonados</td>
-                <td className="p-2 fw-bold">
-                  {userProfile.dropped
-                    ? userProfile.dropped.toLocaleString("pt-BR")
-                    : 0}
-                </td>
-              </tr>
-              <tr>
-                <td className="p-2">Episódios Assistidos</td>
-                <td className="p-2 fw-bold">
-                  {userProfile.totalEpisodesWatched
-                    ? userProfile.totalEpisodesWatched.toLocaleString("pt-BR")
-                    : 0}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="border border-secondary-subtle rounded-4 overflow-hidden mb-4 d-flex flex-column">
+            <table className="table m-0 border-0">
+              <tbody>
+                <tr>
+                  <td className="p-3 border-bottom border-secondary-subtle">
+                    Total
+                  </td>
+                  <td className="p-3 border-bottom border-secondary-subtle fw-bold text-end">
+                    {userProfile.totalAnimes
+                      ? userProfile.totalAnimes.toLocaleString("pt-BR")
+                      : 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-3 border-bottom border-secondary-subtle">
+                    Completos
+                  </td>
+                  <td className="p-3  border-bottom border-secondary-subtle fw-bold text-end">
+                    {userProfile.completed
+                      ? userProfile.completed.toLocaleString("pt-BR")
+                      : 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-3 border-bottom border-secondary-subtle">
+                    Assistindo
+                  </td>
+                  <td className="p-3  border-bottom border-secondary-subtle fw-bold text-end">
+                    {userProfile.watching
+                      ? userProfile.watching.toLocaleString("pt-BR")
+                      : 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-3 border-bottom border-secondary-subtle">
+                    Pausados
+                  </td>
+                  <td className="p-3  border-bottom border-secondary-subtle fw-bold text-end">
+                    {userProfile.onHold
+                      ? userProfile.onHold.toLocaleString("pt-BR")
+                      : 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-3 border-bottom border-secondary-subtle">
+                    Abandonados
+                  </td>
+                  <td className="p-3  border-bottom border-secondary-subtle fw-bold text-end">
+                    {userProfile.dropped
+                      ? userProfile.dropped.toLocaleString("pt-BR")
+                      : 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-3 border-bottom border-secondary-subtle">
+                    Episódios Assistidos
+                  </td>
+                  <td className="p-3  border-bottom border-secondary-subtle fw-bold text-end">
+                    {userProfile.totalEpisodesWatched
+                      ? userProfile.totalEpisodesWatched.toLocaleString("pt-BR")
+                      : 0}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           {/* PAINEL DE FAVORITOS (Miniaturas) */}
           <h5 className="fw-bold mb-3 border-bottom pb-2">
             Favoritos (
@@ -274,7 +288,7 @@ export default function ProfilePage() {
 
           {!userProfile.favoriteAnimes ||
           userProfile.favoriteAnimes.length === 0 ? (
-            <div className="bg-light p-4 rounded-4 text-center border border-dashed">
+            <div className="bg-body p-4 rounded-4 text-center border border-dashed">
               <p className="text-muted m-0 small fw-semibold">
                 Nenhum anime favoritado ainda.
               </p>
@@ -288,7 +302,7 @@ export default function ProfilePage() {
                     className="text-decoration-none"
                   >
                     <div
-                      className="card border-0 shadow-sm h-100 text-center overflow-hidden"
+                      className="card border-0 h-100 text-center overflow-hidden"
                       style={{ transition: "transform 0.2s" }}
                       onMouseOver={(e) =>
                         (e.currentTarget.style.transform = "scale(1.05)")
@@ -308,7 +322,7 @@ export default function ProfilePage() {
                       />
                       <div className="card-body p-2 d-flex align-items-center justify-content-center">
                         <small
-                          className="fw-bold text-dark text-truncate d-block w-100"
+                          className="fw-bold text-body text-truncate d-block w-100"
                           style={{ fontSize: "11px" }}
                           title={anime.title}
                         >

@@ -225,7 +225,7 @@ export default function AnimeDetailsPage() {
       >
         {/* Botão de Voltar */}
         <div className="mb-4">
-          <Link href="/" className="text-decoration-none text-dark fw-semibold">
+          <Link href="/" className="text-decoration-none text-body fw-semibold">
             &larr; Voltar
           </Link>
         </div>
@@ -247,7 +247,7 @@ export default function AnimeDetailsPage() {
               />
             </div>
 
-            <div className="bg-light p-3 rounded-3 border text-center">
+            <div className="bg-body p-3 rounded-3 border text-center">
               <p className="text-muted small mb-1 fw-semibold">
                 Estatística Global
               </p>
@@ -293,7 +293,7 @@ export default function AnimeDetailsPage() {
                   anime.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="badge rounded-pill bg-light text-dark border px-3 py-2"
+                      className="badge rounded-pill bg-body text-body border px-3 py-2"
                     >
                       {tag}
                     </span>
@@ -310,9 +310,9 @@ export default function AnimeDetailsPage() {
                 As Minhas Anotações
               </h5>
               {anime.comments ? (
-                <div className="bg-light p-4 rounded-3 border">
+                <div className="bg-body p-4 rounded-3 border">
                   <p
-                    className="m-0 text-dark fst-italic"
+                    className="m-0 text-body fst-italic"
                     style={{ whiteSpace: "pre-wrap" }}
                   >
                     {anime.comments}
