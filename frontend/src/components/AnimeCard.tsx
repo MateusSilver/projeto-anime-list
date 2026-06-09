@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { Plus, Star } from "lucide-react";
 import { ListProps } from "./List";
 import Link from "next/link";
 
@@ -54,7 +55,11 @@ export default function AnimeCard({
                 marginTop: "-2px",
               }}
             >
-              {anime.favorite ? "★" : "☆"}
+              <Star
+                size={16}
+                color={anime.favorite ? "#FFD700" : "#fff"}
+                fill={anime.favorite ? "#FFD700" : "none"}
+              />
             </span>
           </button>
           <img
@@ -87,8 +92,9 @@ export default function AnimeCard({
             <span className="badge bg-body-secondary text-body text-capitalize">
               {valueLabels[anime.type] || anime.type || "Desconhecido"}
             </span>
-            <span className="badge bg-primary">
-              ★ {anime.score ? anime.score.toFixed(1) : "N/A"}
+            <span className="badge bg-primary d-flex justify-content-center align-items-center gap-1">
+              <Star size={12} color="white" fill="currentColor" />
+              {anime.score ? anime.score.toFixed(1) : "N/A"}
             </span>
           </div>
         </div>
@@ -98,7 +104,7 @@ export default function AnimeCard({
             <span className="fw-semibold">Progresso:</span>
             <span className="fw-semibold text-body d-flex align-items-center gap-1">
               <button
-                className="btn btn-sm btn-outline-success p-0 d-flex align-items-center justify-content-center"
+                className="btn btn-sm btn-success p-0 d-flex align-items-center justify-content-center"
                 style={{
                   width: "20px",
                   height: "20px",
@@ -111,7 +117,7 @@ export default function AnimeCard({
                   !!anime.episodes && anime.watchedEpisodes >= anime.episodes
                 }
               >
-                +
+                <Plus size={12} />
               </button>
               {anime.watchedEpisodes} / {anime.episodes || "??"}
             </span>

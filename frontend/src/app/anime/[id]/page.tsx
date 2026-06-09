@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ListProps } from "@/components/List";
+import { ArrowLeft, Cross, Loader2, Pen, Save, Search, X } from "lucide-react";
 
 // Estendemos a ListProps para incluir o DTO que vem do Java
 interface AnimeDetailsDTO {
@@ -226,7 +227,7 @@ export default function AnimeDetailsPage() {
         {/* Botão de Voltar */}
         <div className="mb-4">
           <Link href="/" className="text-decoration-none text-body fw-semibold">
-            &larr; Voltar
+            <ArrowLeft size={22} /> Voltar
           </Link>
         </div>
 
@@ -331,8 +332,9 @@ export default function AnimeDetailsPage() {
             <div className="mt-4">
               <button
                 onClick={handleOpenEdit}
-                className="btn bg-primary text-white border-primary btn-outline-primary fw-semibold px-4"
+                className="btn bg-primary text-white border-primary btn-outline-primary fw-semibold px-4 d-flex align-items-center gap-1"
               >
+                <Pen size={18} fill="currentColor" />
                 Editar Dados
               </button>
             </div>
@@ -364,7 +366,7 @@ export default function AnimeDetailsPage() {
                 <div className="modal-body p-4">
                   <div className="row g-4">
                     {/* Coluna Esquerda: Imagem, Jikan API e URL */}
-                    <div className="col-12 col-md-4 d-flex flex-column align-items-center justify-content-start bg-light p-4 border-0 rounded-4">
+                    <div className="col-12 col-md-4 d-flex flex-column align-items-center justify-content-start bg-body-tertiary p-4 border-0 rounded-4">
                       {editForm.imageUrl ? (
                         <img
                           src={editForm.imageUrl}
@@ -409,12 +411,21 @@ export default function AnimeDetailsPage() {
                             }
                           />
                           <button
-                            className="btn btn-dark fw-semibold"
+                            className="btn btn-primary fw-semibold d-flex gap-1 align-items-center"
                             type="button"
+                            title="buscar ID no My anime List"
                             onClick={fetchJikanData}
                             disabled={isFetching}
                           >
-                            {isFetching ? "Buscando..." : "Buscar"}
+                            {isFetching ? (
+                              <>
+                                <Loader2 size={18} /> Buscando...
+                              </>
+                            ) : (
+                              <>
+                                <Search size={18} />
+                              </>
+                            )}
                           </button>
                         </div>
                         <small
@@ -453,7 +464,7 @@ export default function AnimeDetailsPage() {
                         </label>
                         <input
                           type="text"
-                          className="form-control fw-semibold fs-5"
+                          className="form-control fw-semibold fs-5 bg-body"
                           value={editForm.title || ""}
                           onChange={(e) =>
                             setEditForm({ ...editForm, title: e.target.value })
@@ -466,7 +477,7 @@ export default function AnimeDetailsPage() {
                           style={{ width: "fit-content" }}
                         >
                           <input
-                            className=" m-0 ms-2"
+                            className=" m-0 ms-2 bg-body"
                             type="checkbox"
                             role="switch"
                             id="editFavoriteSwitch"
@@ -501,7 +512,7 @@ export default function AnimeDetailsPage() {
                             Status
                           </label>
                           <select
-                            className="form-select fw-semibold"
+                            className="form-select fw-semibold bg-body"
                             value={editForm.status || ""}
                             onChange={(e) =>
                               setEditForm({
@@ -524,7 +535,7 @@ export default function AnimeDetailsPage() {
                             Tipo
                           </label>
                           <select
-                            className="form-select fw-semibold"
+                            className="form-select fw-semibold bg-body"
                             value={editForm.type || ""}
                             onChange={(e) =>
                               setEditForm({ ...editForm, type: e.target.value })
@@ -546,7 +557,7 @@ export default function AnimeDetailsPage() {
                           </label>
                           <input
                             type="number"
-                            className="form-control fw-semibold"
+                            className="form-control fw-semibold bg-body"
                             min="0"
                             value={editForm.episodes || ""}
                             onChange={(e) =>
@@ -563,7 +574,7 @@ export default function AnimeDetailsPage() {
                           </label>
                           <input
                             type="number"
-                            className="form-control fw-semibold"
+                            className="form-control fw-semibold bg-body"
                             min="0"
                             value={editForm.watchedEpisodes || ""}
                             onChange={(e) =>
@@ -580,7 +591,7 @@ export default function AnimeDetailsPage() {
                           </label>
                           <input
                             type="number"
-                            className="form-control fw-semibold text-primary"
+                            className="form-control fw-semibold text-primary bg-body"
                             min="0"
                             max="10"
                             step="0.1"
@@ -607,7 +618,7 @@ export default function AnimeDetailsPage() {
                           Tags (separadas por vírgula)
                         </label>
                         <textarea
-                          className="form-control fw-semibold"
+                          className="form-control fw-semibold bg-body"
                           placeholder="ação, aventura, isekai"
                           value={tagsInput}
                           onChange={(e) => setTagsInput(e.target.value)}
@@ -619,7 +630,7 @@ export default function AnimeDetailsPage() {
                           Anotações Pessoais
                         </label>
                         <textarea
-                          className="form-control fw-semibold"
+                          className="form-control fw-semibold bg-body"
                           rows={4}
                           placeholder="Escreva as suas impressões, onde parou, etc..."
                           value={editForm.comments || ""}
@@ -639,7 +650,7 @@ export default function AnimeDetailsPage() {
                 <div className="modal-footer border-top-0 pt-0 pb-4 px-4">
                   <button
                     type="button"
-                    className="btn btn-light border-none hover:border-none fw-semibold px-4"
+                    className="btn btn-body border-none hover:border-none fw-semibold px-4"
                     onClick={() => setIsModalOpen(false)}
                     disabled={isSaving}
                   >
@@ -675,15 +686,17 @@ export default function AnimeDetailsPage() {
             >
               <div className="modal-content bg-transparent border-0 shadow-none w-100 h-100">
                 <div
-                  className="modal-header border-0 pb-0 justify-content-end position-absolute top-0 end-0"
+                  className="modal-header border-0 pb-0 justify-content-end position-absolute top-0 end-0 bg-body-transparent text-body"
                   style={{ zIndex: 1 }}
                 >
                   <button
                     type="button"
-                    className="btn-close bg-white p-3 rounded-circle text-dark"
+                    className="btn text-white p-3 rounded-circle"
                     onClick={() => setIsImageModalOpen(false)}
                     title="Fechar"
-                  ></button>
+                  >
+                    <X fill="currentColor" size={22} />
+                  </button>
                 </div>
 
                 <div className="modal-body text-center p-0 d-flex justify-content-center align-items-center h-100">

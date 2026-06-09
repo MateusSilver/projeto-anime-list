@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { ListProps } from "@/components/List";
+import { Save, Loader2, Search } from "lucide-react";
 
 interface AddAnimeModalProps {
   isOpen: boolean;
@@ -28,6 +29,7 @@ export default function AddAnimeModal({
 }: AddAnimeModalProps) {
   const [isFetching, setIsFetching] = useState(false);
   const [newAnime, setNewAnime] = useState<Partial<ListProps>>(DEFAULT_ANIME);
+  const [isSaving, setIsSaving] = useState(false);
 
   if (!isOpen) return null;
 
@@ -83,6 +85,7 @@ export default function AddAnimeModal({
       alert("Por favor, insira um título para o anime.");
       return;
     }
+    setIsSaving(true);
 
     const animeToSave = {
       ...newAnime,
@@ -95,6 +98,7 @@ export default function AddAnimeModal({
 
     onSave(animeToSave);
     setNewAnime(DEFAULT_ANIME);
+    setIsSaving(false);
   };
 
   return (
@@ -161,10 +165,21 @@ export default function AddAnimeModal({
                   <button
                     className="btn btn-primary fw-semibold"
                     type="button"
+                    title={
+                      isFetching ? "Buscando" : "Buscar ID no My Anime List"
+                    }
                     onClick={fetchJikanData}
                     disabled={isFetching}
                   >
-                    {isFetching ? "Buscando..." : "Buscar"}
+                    {isFetching ? (
+                      <>
+                        <Loader2 className="icon-spin" /> Buscando...
+                      </>
+                    ) : (
+                      <>
+                        <Search />
+                      </>
+                    )}
                   </button>
                 </div>
                 <small
@@ -337,13 +352,26 @@ export default function AddAnimeModal({
           <div className="modal-footer border-top-0 pt-0">
             <button
               type="button"
-              className="btn btn-primary fw-semibold"
+              className="btn btn-primary fw-semibold d-flex align-items-center gap-2"
               onClick={handleInternalSave}
+              disabled={isSaving}
+              title={isSaving ? "Salvando" : "Salvar Titulo"}
             >
-              Adicionar Anime
+              {isSaving ? (
+                <>
+                  <Loader2 size={18} className="icon-spin" />
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <Save size={18} />
+                  Salvar
+                </>
+              )}
             </button>
             <button
               type="button"
+              title="cancelar"
               className="btn btn-secondary fw-semibold"
               onClick={handleClose}
             >

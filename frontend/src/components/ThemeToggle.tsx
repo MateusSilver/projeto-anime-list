@@ -1,5 +1,5 @@
 "use client";
-
+import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
@@ -47,7 +47,11 @@ export default function ThemeToggle() {
       }
     >
       <span style={{ fontSize: "1.5rem", lineHeight: 1 }}>
-        {theme === "light" ? "🌙" : "☀️"}
+        {theme === "light" ? (
+          <Moon size={32} className="text-dark" />
+        ) : (
+          <Sun size={32} className="text-warning" />
+        )}
       </span>
     </button>
   );

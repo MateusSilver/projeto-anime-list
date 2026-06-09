@@ -1,6 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-
+import {
+  Star,
+  User,
+  Lock,
+  ImageIcon,
+  ArrowLeft,
+  Mail,
+  ArrowLeftIcon,
+  User2Icon,
+  Loader2,
+  Save,
+  StarIcon,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -114,8 +127,11 @@ export default function ProfilePage() {
         <h4 className="text-danger">
           Não foi possível carregar os dados do perfil.
         </h4>
-        <Link href="/" className="btn btn-primary mt-3">
-          Voltar ao Acervo
+        <Link
+          href="/"
+          className="btn btn-primary mt-3 d-flex align-items-center gap-1"
+        >
+          <ArrowLeft size={16} /> Voltar ao Acervo
         </Link>
       </div>
     );
@@ -125,7 +141,11 @@ export default function ProfilePage() {
     <main className="container py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="fw-bold m-0">Meu Perfil</h1>
-        <Link href="/" className="btn btn-outline-secondary rounded-pill px-4">
+        <Link
+          href="/"
+          className="d-flex align-items-center justify-content-between btn btn-outline-secondary rounded-pill px-3"
+        >
+          <ArrowLeft size={24} />
           Voltar
         </Link>
       </div>
@@ -145,7 +165,10 @@ export default function ProfilePage() {
               style={{ width: "120px", height: "120px", objectFit: "cover" }}
             />
             <h4 className="fw-bold m-0 text-body">{userProfile.name}</h4>
-            <p className="text-muted small m-0">{userProfile.email}</p>
+            <p className="text-muted small m-0">
+              {" "}
+              <Mail size={12} /> {userProfile.email}
+            </p>
           </div>
 
           {/* Cartão de Edição de Dados */}
@@ -165,17 +188,19 @@ export default function ProfilePage() {
                 <label className="form-label small fw-semibold text-muted">
                   Nome de Exibição
                 </label>
-                <input
-                  type="text"
-                  className="form-control fw-semibold"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  required
-                />
+                <div className="d-flex gap-1 align-items-center">
+                  <input
+                    type="text"
+                    className="form-control fw-semibold"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
               <div className="mb-3">
                 <label className="form-label small fw-semibold text-muted">
-                  URL do Avatar (Imagem Direta)
+                  Avatar
                 </label>
                 <input
                   type="url"
@@ -199,10 +224,20 @@ export default function ProfilePage() {
               </div>
               <button
                 type="submit"
-                className="btn btn-primary w-100 fw-bold"
+                className="btn btn-primary w-100 fw-bold d-flex align-items-center gap-1 justify-content-center"
                 disabled={isSaving}
               >
-                {isSaving ? "Salvando..." : "Salvar Alterações"}
+                {isSaving ? (
+                  <>
+                    <Loader2 className="icon-spin" size={18} />
+                    Salvando...
+                  </>
+                ) : (
+                  <>
+                    <Save size={18} />
+                    Salvar
+                  </>
+                )}
               </button>
             </form>
           </div>
@@ -279,7 +314,7 @@ export default function ProfilePage() {
           </div>
           {/* PAINEL DE FAVORITOS (Miniaturas) */}
           <h5 className="fw-bold mb-3 border-bottom pb-2">
-            Favoritos (
+            <StarIcon size={22} /> Favoritos (
             {userProfile.favoriteAnimes?.length
               ? userProfile.favoriteAnimes.length.toLocaleString("pt-BR")
               : 0}

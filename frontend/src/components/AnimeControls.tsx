@@ -1,3 +1,5 @@
+import { Search, Plus, Star } from "lucide-react";
+
 interface AnimeControlsProps {
   filterCategory: string;
   onFilterCategoryChange: (category: string) => void;
@@ -32,7 +34,8 @@ export default function AnimeControls({
 
   return (
     <>
-      <div className="bg-body p-3 rounded-3 border mb-4">
+      <div className="bg-body p-3 rounded-3 border mb-4 d-flex align-items-center gap-2">
+        <Search size={18} className="text-muted" />
         <input
           type="text"
           className="form-control w-100 w-md-50 border-0 bg-body fw-semibold"
@@ -45,10 +48,10 @@ export default function AnimeControls({
       <div className="d-flex justify-content-between mb-4 bg-body p-3 border rounded flex-wrap gap-3">
         <div className="d-flex align-items-center gap-3">
           <button
-            className="fs-5 px-3 btn btn-primary fw-semibold rounded-pill"
+            className="fs-5 px-2 btn btn-primary fw-semibold rounded-pill d-flex align-items-center"
             onClick={onOpenPopUp}
           >
-            + Adicionar
+            <Plus size={32} />
           </button>
 
           <div className="d-flex flex-column align-items-center gap-2">

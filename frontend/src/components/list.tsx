@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState, useMemo } from "react";
+import { Loader2, LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -250,7 +251,12 @@ export default function List() {
   ]);
 
   if (isLoading) {
-    return <div className="text-center mt-5">Carregando acervo</div>;
+    return (
+      <div className="d-flex flex-column align-items-center justify-content-center mt-5 pt-5 text-body-secondary">
+        <Loader2 size={48} className="icon-spin text-primary mb-3" />
+        <h5 className="fw-semibold">Carregando seu acervo...</h5>
+      </div>
+    );
   }
 
   const handleUpdateAnimeEpisodes = async (id: number) => {
@@ -392,8 +398,9 @@ export default function List() {
 
           <button
             onClick={handleLogout}
-            className="btn btn-outline-danger fw-semibold rounded-pill px-4"
+            className="d-flex align-items-center justify-content-center gap-1 btn btn-outline-danger fw-semibold rounded-pill px-4"
           >
+            <LogOutIcon />
             Sair
           </button>
         </div>
