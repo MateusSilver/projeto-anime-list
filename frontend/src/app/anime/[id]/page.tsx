@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ListProps } from "@/components/List";
-import { ArrowLeft, Cross, Loader2, Pen, Save, Search, X } from "lucide-react";
+import { ArrowLeft, Loader2, Pen, Search, X } from "lucide-react";
 
 // Estendemos a ListProps para incluir o DTO que vem do Java
 interface AnimeDetailsDTO {
@@ -130,6 +130,21 @@ export default function AnimeDetailsPage() {
     }
   };
 
+  const getHighResImageUrl = (url?: string) => {
+    if (!url) return "https://placehold.co/400x600/EDF2F7/718096?text=Sem+Capa";
+
+    if (!url.includes("myanimelist.net")) return url;
+
+    // Se já for a versão grande (termina com l.jpg, l.webp, etc), retorna direto
+    if (url.match(/l\.(jpg|webp|png|jpeg)$/i)) return url;
+
+    if (url.match(/t\.(jpg|webp|png|jpeg)$/i)) {
+      return url.replace(/t\.(jpg|webp|png|jpeg)$/i, "l.$1");
+    }
+
+    return url.replace(/\.(jpg|webp|png|jpeg)$/i, "l.$1");
+  };
+
   useEffect(() => {
     const fetchAnimeDetails = async () => {
       if (!animeId) {
@@ -241,7 +256,7 @@ export default function AnimeDetailsPage() {
               title="Clique para ampliar a imagem"
             >
               <img
-                src={anime.imageUrl || "https://via.placeholder.com/300x400"}
+                src={getHighResImageUrl(anime.imageUrl)}
                 alt={anime.title}
                 className="img-fluid w-100"
                 style={{ maxWidth: "100%", height: "auto" }}
@@ -701,14 +716,11 @@ export default function AnimeDetailsPage() {
 
                 <div className="modal-body text-center p-0 d-flex justify-content-center align-items-center h-100">
                   <img
-                    src={
-                      anime.imageUrl ||
-                      "https://placehold.co/400x600/EDF2F7/718096?text=Sem+Capa"
-                    }
+                    src={getHighResImageUrl(anime.imageUrl)}
                     alt={anime.title}
                     className="img-fluid rounded-none shadow-lg"
                     style={{
-                      maxHeight: "90vh",
+                      maxHeight: "100vh",
                       maxWidth: "100%",
                       objectFit: "contain",
                       cursor: "zoom-out",
