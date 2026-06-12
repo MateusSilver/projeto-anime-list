@@ -1,6 +1,7 @@
 package br.com.projeto_anime_list.animelist.repository;
 
 import br.com.projeto_anime_list.animelist.model.Anime;
+import br.com.projeto_anime_list.animelist.model.ReviewDTO;
 import br.com.projeto_anime_list.animelist.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,12 @@ public interface AnimeRepository extends JpaRepository<Anime, Long>{
 
     @Query("SELECT COALESCE(SUM(a.watchedEpisodes), 0) FROM Anime a WHERE a.user = :user")
     Long sumWatchedEpisodesByUser(@Param("user") User user);
+
+    // reviewDTO
+    @Query("SELECT new br.com.projeto_anime_list.animelist.model.ReviewDTO(" +
+            "a.id, a.user.name, a.user.profileImageUrl, a.reviewText, a.reviewLikes, a.score, " +
+            "(CASE WHEN :userId IN elements(a.likedByUsers) THEN true ELSE false END)) " +
+            "FROM Anime a WHERE a.malId = :malId AND a.reviewText IS NOT NULL AND TRIM(a.reviewText) <> '' " +
+            "ORDER BY COALESCE(a.reviewLikes, 0) DESC")
+    List<ReviewDTO> findReviewsGloballyByMalId(@Param("malId") Long malId, @Param("userId") Long userId);
 }

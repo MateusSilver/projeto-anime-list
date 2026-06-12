@@ -20,6 +20,7 @@ export interface ListProps {
   score: number;
   status: string;
   comments: string;
+  reviewText: string;
   imageUrl: string;
   favorite?: boolean;
 }

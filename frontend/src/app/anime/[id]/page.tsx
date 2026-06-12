@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -5,7 +6,17 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ListProps } from "@/components/List";
-import { ArrowLeft, Loader2, Pen, Search, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2,
+  Pen,
+  Search,
+  X,
+  MessageSquare,
+  Star,
+  ThumbsUp,
+} from "lucide-react";
+import ReviewModal from "@/components/ReviewModal";
 
 // Estendemos a ListProps para incluir o DTO que vem do Java
 interface AnimeDetailsDTO {
@@ -30,6 +41,10 @@ export default function AnimeDetailsPage() {
   const [data, setData] = useState<AnimeDetailsDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // reviews
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   // modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -145,6 +160,62 @@ export default function AnimeDetailsPage() {
     return url.replace(/\.(jpg|webp|png|jpeg)$/i, "l.$1");
   };
 
+  const fetchReviews = async (malIdToSearch: number) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/animes/reviews/${malIdToSearch}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setReviews(data);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar resenhas", error);
+    }
+  };
+
+  const handleLikeReview = async (reviewId: number) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/animes/reviews/${reviewId}/like`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (res.ok) {
+        const novoTotalDeLikes = await res.json();
+
+        // Atualiza apenas a resenha
+        setReviews((prevReviews) =>
+          prevReviews.map((rev) =>
+            rev.reviewId === reviewId
+              ? {
+                  ...rev,
+                  likes: novoTotalDeLikes,
+                  isLikedByMe: !rev.isLikedByMe,
+                }
+              : rev,
+          ),
+        );
+      }
+    } catch (error) {
+      console.error("Erro ao curtir a resenha:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchAnimeDetails = async () => {
       if (!animeId) {
@@ -179,6 +250,10 @@ export default function AnimeDetailsPage() {
 
         const result = await response.json();
         setData(result);
+
+        if (data?.anime?.malId) {
+          fetchReviews(data.anime.malId);
+        }
       } catch (error) {
         setError(
           error instanceof Error
@@ -191,7 +266,34 @@ export default function AnimeDetailsPage() {
     };
 
     if (animeId) fetchAnimeDetails();
-  }, [animeId, router]);
+  }, [animeId, data?.anime.malId, router]);
+
+  const handleSaveReview = async (newReviewText: string) => {
+    if (!data?.anime) return;
+
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(
+      `http://localhost:8080/api/animes/${animeId}/review`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ reviewText: newReviewText }),
+      },
+    );
+
+    if (!res.ok) {
+      alert("Não foi possível salvar a sua resenha.");
+      throw new Error("Falha ao salvar a resenha");
+    }
+
+    setData({ ...data, anime: { ...data.anime, reviewText: newReviewText } });
+
+    if (data.anime.malId) fetchReviews(data.anime.malId);
+  };
 
   if (isLoading) {
     return <div className="text-center mt-5">A carregar detalhes...</div>;
@@ -355,6 +457,119 @@ export default function AnimeDetailsPage() {
             </div>
           </div>
         </div>
+        {/* SESSÃO DE RESENHAS GLOBAIS */}
+        <div className="mt-5">
+          <h3 className="fw-bold mb-4 d-flex align-items-center gap-2">
+            <MessageSquare size={24} className="text-primary" />
+            Resenhas da Comunidade ({reviews.length})
+          </h3>
+
+          {reviews.length === 0 ? (
+            <div className="alert bg-body-tertiary border-0 text-center py-4 d-flex align-items-center flex-column  gap-2 text-body-secondary rounded-4">
+              Nenhuma resenha encontrada para este anime. Seja o primeiro a
+              avaliar!
+              <button
+                className="btn bg-primary text-white rounded-2 fw-bold"
+                onClick={() => setIsReviewModalOpen(true)}
+              >
+                Fazer uma Resenha
+              </button>
+            </div>
+          ) : (
+            <div className="row g-3">
+              {/* Mostra apenas as 3 melhores resenhas para não poluir a tela principal */}
+              {reviews.slice(0, 3).map((review, idx) => (
+                <div key={idx} className="col-12">
+                  <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-3">
+                    <div className="d-flex align-items-center justify-content-between mb-3">
+                      <div className="d-flex align-items-center gap-3">
+                        <img
+                          src={
+                            review.userImage ||
+                            "https://placehold.co/50x50?text=U"
+                          }
+                          alt={review.userName}
+                          className="rounded-circle border border-2 border-secondary-subtle"
+                          style={{
+                            width: "45px",
+                            height: "45px",
+                            objectFit: "cover",
+                          }}
+                        />
+                        <div>
+                          <h6 className="mb-0 fw-bold">{review.userName}</h6>
+                          <small className="text-body-secondary d-flex align-items-center gap-1">
+                            <Star
+                              size={12}
+                              className="text-warning"
+                              fill="#FFD700"
+                            />
+                            Nota:{" "}
+                            {review.score ? review.score.toFixed(1) : "N/A"}
+                          </small>
+                        </div>
+                      </div>
+                      {/* Botão de Curtir Resenha */}
+                      <button
+                        onClick={() => handleLikeReview(review.reviewId)}
+                        className={`btn btn-sm rounded-pill d-flex align-items-center gap-1 fw-semibold shadow-sm ${
+                          review.isLikedByMe
+                            ? "btn-secondary"
+                            : "btn-outline-secondary"
+                        }`}
+                        style={{ transition: "all 0.2s" }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.transform = "scale(1.05)")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.transform = "scale(1)")
+                        }
+                        title={
+                          review.isLikedByMe
+                            ? "Remover curtida"
+                            : "Curtir resenha"
+                        }
+                      >
+                        <ThumbsUp
+                          fill={review.isLikedByMe ? "currentColor" : "none"}
+                          size={14}
+                        />
+                        {review.likes || 0}
+                      </button>
+                    </div>
+
+                    <p
+                      className="card-text text-body"
+                      style={{ whiteSpace: "pre-wrap" }}
+                    >
+                      {review.reviewText}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Botão para Expandir (Será útil quando criar a página dedicada de resenhas) */}
+          {reviews.length > 3 && (
+            <div className="text-center mt-3">
+              <Link
+                href={`/animes/${anime.id}/reviews`}
+                className="btn btn-primary rounded-pill px-4 fw-bold"
+              >
+                Ver todas as {reviews.length} resenhas
+              </Link>
+            </div>
+          )}
+        </div>
+        {/* COMPONENTE DO MODAL DE RESENHA */}
+        <ReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          initialText={data?.anime?.reviewText || ""}
+          animeTitle={data?.anime?.title || "este anime"}
+          onSave={handleSaveReview}
+        />
         {/* MODAL DE IMAGEM */}
         {isModalOpen && (
           <div

@@ -1,6 +1,8 @@
 package br.com.projeto_anime_list.animelist.controller;
 
 import br.com.projeto_anime_list.animelist.model.Anime;
+import br.com.projeto_anime_list.animelist.model.ReviewDTO;
+import br.com.projeto_anime_list.animelist.model.ReviewInputDTO;
 import br.com.projeto_anime_list.animelist.model.User;
 import br.com.projeto_anime_list.animelist.repository.AnimeRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +57,14 @@ public class AnimeController {
         return ResponseEntity.ok(new AnimeDetailsDTO(animeFoco ,totalUsuarios, mediaGlobal));
     }
 
+    // get reviews
+    @GetMapping("/reviews/{malId}")
+    public ResponseEntity<List<ReviewDTO>> getGlobalReviews(@PathVariable Long malId){
+        User logado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<ReviewDTO> reviews = animerepo.findReviewsGloballyByMalId(malId, logado.getId());
+        return ResponseEntity.ok(reviews);
+    }
+
     // rota POST:
     @PostMapping
     public ResponseEntity<?> criarAnime(@RequestBody Anime novoAnime){
@@ -70,6 +80,33 @@ public class AnimeController {
         novoAnime.setUser(logado);
         Anime animeSalvo = animerepo.save(novoAnime);
         return ResponseEntity.status(HttpStatus.CREATED).body(animeSalvo);
+    }
+
+    @PostMapping("/reviews/{reviewId}/like")
+    public ResponseEntity<?> toggleReviewLike(@PathVariable Long reviewId) {
+        User logado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<Anime> animeOpt = animerepo.findById(reviewId);
+        if (animeOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resenha não encontrada.");
+        }
+
+        Anime anime = animeOpt.get();
+        Long meuId = logado.getId();
+
+        // Liga/Desliga o Like
+        if (anime.getLikedByUsers().contains(meuId)) {
+            anime.getLikedByUsers().remove(meuId); // Remove o Like
+        } else {
+            anime.getLikedByUsers().add(meuId); // Adiciona o Like
+        }
+
+        // Atualiza a contagem
+        anime.setReviewLikes(anime.getLikedByUsers().size());
+        animerepo.save(anime);
+
+        // Retorna a nova quantidade
+        return ResponseEntity.ok(anime.getReviewLikes());
     }
 
     // rota PUT:
@@ -99,6 +136,23 @@ public class AnimeController {
             animerepo.save(anime);
             return ResponseEntity.ok(anime);
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/review")
+    public ResponseEntity<?> atualizarResenha(@PathVariable Long id, @RequestBody ReviewInputDTO input) {
+        User logado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<Anime> animeOpt = animerepo.findByIdAndUser(id, logado);
+
+        if (animeOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Anime não encontrado na sua lista.");
+        }
+
+        Anime anime = animeOpt.get();
+        anime.setReviewText(input.reviewText());
+        animerepo.save(anime);
+
+        return ResponseEntity.ok().body("Resenha salva com sucesso!");
     }
 
 }

@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="Animes", uniqueConstraints = {
@@ -45,6 +47,17 @@ public class Anime {
 
     @Column(name = "is_favorite")
     private Boolean favorite = false;
+
+    @Column(columnDefinition = "TEXT")
+    private String reviewText;
+
+    @Column(columnDefinition = "integer default 0")
+    private Integer reviewLikes = 0;
+
+    @ElementCollection
+    @CollectionTable(name = "anime_review_likes", joinColumns = @JoinColumn(name = "anime_id"))
+    @Column(name = "user_id")
+    private Set<Long> likedByUsers = new HashSet<>();
 
     @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
