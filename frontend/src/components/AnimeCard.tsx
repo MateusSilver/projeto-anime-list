@@ -9,6 +9,7 @@ export interface AnimeCardProps {
   onToggleFavorite: (id: number) => void;
   valueLabels: Record<string, string>;
   badgeClasses: Record<string, string>;
+  isReadOnly?: boolean;
 }
 
 export default function AnimeCard({
@@ -17,51 +18,91 @@ export default function AnimeCard({
   onToggleFavorite,
   valueLabels,
   badgeClasses,
+  isReadOnly,
 }: AnimeCardProps) {
   return (
     <div className="card anime-card bg-body text-body-secondary">
       <Link href={`/anime/${anime.id}`}>
         <div className="card-img-container position-relative">
-          <button
-            className="btn d-flex align-items-center justify-content-center btn-outline-danger position-absolute top-0 end-0 m-2"
-            style={{
-              top: "10px",
-              right: "10px",
-              borderRadius: "50%",
-              zIndex: 10,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              border: "none",
-              width: "35px",
-              height: "35px",
-              padding: 0,
-              boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-              transition: "all 0.3s ease",
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              onToggleFavorite(anime.id);
-            }}
-            title={
-              anime.favorite
-                ? "Remover dos favoritos"
-                : "Adicionar aos favoritos"
-            }
-          >
-            <span
+          {isReadOnly ? (
+            <button
+              className="btn d-flex align-items-center justify-content-center btn-outline-danger position-absolute top-0 end-0 m-2"
               style={{
-                fontSize: "1.2rem",
-                lineHeight: 1,
-                color: anime.favorite ? "#FFD700" : "#ddd",
-                marginTop: "-2px",
+                top: "10px",
+                right: "10px",
+                borderRadius: "50%",
+                zIndex: 10,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                border: "none",
+                width: "35px",
+                height: "35px",
+                padding: 0,
+                boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                transition: "all 0.3s ease",
               }}
+              title={
+                anime.favorite
+                  ? "Remover dos favoritos"
+                  : "Adicionar aos favoritos"
+              }
             >
-              <Star
-                size={16}
-                color={anime.favorite ? "#FFD700" : "#fff"}
-                fill={anime.favorite ? "#FFD700" : "none"}
-              />
-            </span>
-          </button>
+              <span
+                style={{
+                  fontSize: "1.2rem",
+                  lineHeight: 1,
+                  color: anime.favorite ? "#FFD700" : "#ddd",
+                  marginTop: "-2px",
+                }}
+              >
+                <Star
+                  size={16}
+                  color={anime.favorite ? "#FFD700" : "#fff"}
+                  fill={anime.favorite ? "#FFD700" : "none"}
+                />
+              </span>
+            </button>
+          ) : (
+            <button
+              className="btn d-flex align-items-center justify-content-center btn-outline-danger position-absolute top-0 end-0 m-2"
+              style={{
+                top: "10px",
+                right: "10px",
+                borderRadius: "50%",
+                zIndex: 10,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                border: "none",
+                width: "35px",
+                height: "35px",
+                padding: 0,
+                boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                transition: "all 0.3s ease",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                onToggleFavorite(anime.id);
+              }}
+              title={
+                anime.favorite
+                  ? "Remover dos favoritos"
+                  : "Adicionar aos favoritos"
+              }
+            >
+              <span
+                style={{
+                  fontSize: "1.2rem",
+                  lineHeight: 1,
+                  color: anime.favorite ? "#FFD700" : "#ddd",
+                  marginTop: "-2px",
+                }}
+              >
+                <Star
+                  size={16}
+                  color={anime.favorite ? "#FFD700" : "#fff"}
+                  fill={anime.favorite ? "#FFD700" : "none"}
+                />
+              </span>
+            </button>
+          )}
           <img
             src={
               anime.imageUrl ||
@@ -103,22 +144,26 @@ export default function AnimeCard({
           <div className="d-flex justify-content-between small text-body-secondary mb-1">
             <span className="fw-semibold">Progresso:</span>
             <span className="fw-semibold text-body d-flex align-items-center gap-1">
-              <button
-                className="btn btn-sm btn-success p-0 d-flex align-items-center justify-content-center"
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  fontSize: "12px",
-                  borderRadius: "25px",
-                }}
-                title="Mais um episódio assistido"
-                onClick={() => onIncrement(anime.id)}
-                disabled={
-                  !!anime.episodes && anime.watchedEpisodes >= anime.episodes
-                }
-              >
-                <Plus size={12} />
-              </button>
+              {isReadOnly ? (
+                <></>
+              ) : (
+                <button
+                  className="btn btn-sm btn-success p-0 d-flex align-items-center justify-content-center"
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    fontSize: "12px",
+                    borderRadius: "25px",
+                  }}
+                  title="Mais um episódio assistido"
+                  onClick={() => onIncrement(anime.id)}
+                  disabled={
+                    !!anime.episodes && anime.watchedEpisodes >= anime.episodes
+                  }
+                >
+                  <Plus size={12} />
+                </button>
+              )}
               {anime.watchedEpisodes} / {anime.episodes || "??"}
             </span>
           </div>

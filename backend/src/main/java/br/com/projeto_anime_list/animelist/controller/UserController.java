@@ -1,10 +1,10 @@
 package br.com.projeto_anime_list.animelist.controller;
 
 
-import br.com.projeto_anime_list.animelist.model.Anime;
-import br.com.projeto_anime_list.animelist.model.User;
+import br.com.projeto_anime_list.animelist.model.*;
 import br.com.projeto_anime_list.animelist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import br.com.projeto_anime_list.animelist.repository.AnimeRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -69,6 +70,76 @@ public class UserController {
         );
 
         return ResponseEntity.ok(perfil);
+    }
+
+    @GetMapping("/{id}/public-profile")
+    public ResponseEntity<?> getPublicProfile(@PathVariable Long id) {
+        Optional<User> userOptional = userRepo.findById(id);
+
+        if(userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilizador não encontrado");
+        }
+
+        User publicUser = userOptional.get();
+        List<Anime> publicList = animeRepo.findByUser(publicUser);
+
+        // map
+        long totalAnimes = publicList.size();
+        long completed = publicList.stream().filter(a -> "COMPLETED".equalsIgnoreCase(a.getStatus())).count();
+        long watching = publicList.stream().filter(a -> "WATCHING".equalsIgnoreCase(a.getStatus())).count();
+        long dropped = publicList.stream().filter(a -> "DROPPED".equalsIgnoreCase(a.getStatus())).count();
+        long onHold = publicList.stream().filter(a -> "ON-HOLD".equalsIgnoreCase(a.getStatus())).count();
+        long totalEpisodesWatched = publicList.stream().mapToLong(Anime::getWatchedEpisodes).sum();
+
+        List<FavoriteAnimeDTO> favoriteAnimes = publicList.stream()
+                .filter(a -> a.getFavorite() != null && a.getFavorite())
+                .map(a -> new FavoriteAnimeDTO(a.getId(), a.getTitle(), a.getImageUrl()))
+                .toList();
+
+        PublicProfileDTO dto = new PublicProfileDTO(
+                publicUser.getId(),
+                publicUser.getName(),
+                publicUser.getEmail(),
+                publicUser.getProfileImageUrl(),
+                totalAnimes,
+                completed,
+                watching,
+                dropped,
+                onHold,
+                totalEpisodesWatched,
+                favoriteAnimes
+        );
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/{userId}/animes")
+    public ResponseEntity<?> getPublicAnimeList(@PathVariable Long userId) {
+        Optional<User> userOpt = userRepo.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilizador não encontrado.");
+        }
+
+        User listOwner = userOpt.get();
+
+        List<Anime> userAnimes = animeRepo.findByUser(listOwner);
+
+        List<PublicAnimeDTO> publicList = userAnimes.stream()
+                .map(a -> new PublicAnimeDTO(
+                        a.getId(),
+                        a.getMalId(),
+                        a.getTitle(),
+                        a.getImageUrl(),
+                        a.getType(),
+                        a.getEpisodes(),
+                        a.getWatchedEpisodes(),
+                        a.getScore(),
+                        a.getStatus(),
+                        a.getFavorite()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(publicList);
     }
 
     @PutMapping("/profile")

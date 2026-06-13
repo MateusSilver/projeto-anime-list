@@ -483,31 +483,43 @@ export default function AnimeDetailsPage() {
                   <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-3">
                     <div className="d-flex align-items-center justify-content-between mb-3">
                       <div className="d-flex align-items-center gap-3">
-                        <img
-                          src={
-                            review.userImage ||
-                            "https://placehold.co/50x50?text=U"
-                          }
-                          alt={review.userName}
-                          className="rounded-circle border border-2 border-secondary-subtle"
-                          style={{
-                            width: "45px",
-                            height: "45px",
-                            objectFit: "cover",
-                          }}
-                        />
-                        <div>
-                          <h6 className="mb-0 fw-bold">{review.userName}</h6>
-                          <small className="text-body-secondary d-flex align-items-center gap-1">
-                            <Star
-                              size={12}
-                              className="text-warning"
-                              fill="#FFD700"
+                        <Link
+                          href={`/user/${review.userId}`}
+                          className="text-decoration-none text-body"
+                        >
+                          <div
+                            className="d-flex align-items-center gap-3"
+                            style={{ cursor: "pointer" }}
+                          >
+                            <img
+                              src={
+                                review.userImage ||
+                                "https://placehold.co/50x50?text=U"
+                              }
+                              alt={review.userName}
+                              className="rounded-circle border border-2 border-secondary-subtle"
+                              style={{
+                                width: "45px",
+                                height: "45px",
+                                objectFit: "cover",
+                              }}
                             />
-                            Nota:{" "}
-                            {review.score ? review.score.toFixed(1) : "N/A"}
-                          </small>
-                        </div>
+                            <div>
+                              <h6 className="mb-0 fw-bold">
+                                {review.userName}
+                              </h6>
+                              <small className="text-body-secondary d-flex align-items-center gap-1">
+                                <Star
+                                  size={12}
+                                  className="text-warning"
+                                  fill="#FFD700"
+                                />
+                                Nota:{" "}
+                                {review.score ? review.score.toFixed(1) : "N/A"}
+                              </small>
+                            </div>
+                          </div>
+                        </Link>
                       </div>
                       {/* Botão de Curtir Resenha */}
                       <button

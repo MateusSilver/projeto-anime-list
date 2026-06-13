@@ -1,4 +1,4 @@
-import { Search, Plus, Star } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 
 interface AnimeControlsProps {
   filterCategory: string;
@@ -9,11 +9,11 @@ interface AnimeControlsProps {
   onSortByChange: (sortBy: string) => void;
   onOpenPopUp: () => void;
   filterOptions: Record<string, { value: string; label: string }[]>;
-
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
   showFavoritesOnly: boolean;
   onToggleFavoritesOnly: () => void;
+  isReadOnly?: boolean;
 }
 
 export default function AnimeControls({
@@ -29,6 +29,7 @@ export default function AnimeControls({
   onSearchQueryChange,
   showFavoritesOnly,
   onToggleFavoritesOnly,
+  isReadOnly,
 }: AnimeControlsProps) {
   const currentFilterOptions = filterOptions[filterCategory] || [];
 
@@ -47,12 +48,16 @@ export default function AnimeControls({
       </div>
       <div className="d-flex justify-content-between mb-4 bg-body p-3 border rounded flex-wrap gap-3">
         <div className="d-flex align-items-center gap-3">
-          <button
-            className="fs-5 px-2 btn btn-primary fw-semibold rounded-pill d-flex align-items-center"
-            onClick={onOpenPopUp}
-          >
-            <Plus size={32} />
-          </button>
+          {isReadOnly ? (
+            <></>
+          ) : (
+            <button
+              className="fs-5 px-2 btn btn-primary fw-semibold rounded-pill d-flex align-items-center"
+              onClick={onOpenPopUp}
+            >
+              <Plus size={32} />
+            </button>
+          )}
 
           <div className="d-flex flex-column align-items-center gap-2">
             <label
