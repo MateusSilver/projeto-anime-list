@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { Plus, Star } from "lucide-react";
+import { MessageSquare, Plus, Star } from "lucide-react";
 import { ListProps } from "./List";
+import { useState } from "react";
 import Link from "next/link";
 
 export interface AnimeCardProps {
@@ -20,6 +21,8 @@ export default function AnimeCard({
   badgeClasses,
   isReadOnly,
 }: AnimeCardProps) {
+  const [isHovering, setIsHovering] = useState(false);
+
   return (
     <div className="card anime-card bg-body text-body-secondary">
       <Link href={`/anime/${anime.id}`}>
@@ -191,6 +194,45 @@ export default function AnimeCard({
             >
               {valueLabels[anime.status] || anime.status || "Desconhecido"}
             </span>
+            {isReadOnly && (
+              <div className="d-flex align-items-center justify-content-between">
+                {anime.comments && anime.comments.trim() !== "" && (
+                  <div
+                    className="position-relative d-flex align-items-center"
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                  >
+                    <button
+                      className="btn btn-sm p-0 text-primary"
+                      style={{ cursor: "help" }}
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <MessageSquare fill="currentColor" size={16} />
+                    </button>
+                    {isHovering && (
+                      <div className="mal-tooltip bg-body-secondary text-body-secondary">
+                        <h6
+                          className="fw-bold mb-2"
+                          style={{ fontSize: "14px" }}
+                        >
+                          Anotações do Utilizador
+                        </h6>
+                        <p
+                          className="m-0"
+                          style={{
+                            fontSize: "12.5px",
+                            whiteSpace: "pre-wrap",
+                            lineHeight: "1.4",
+                          }}
+                        >
+                          {anime.comments}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -10,5 +10,6 @@ public record PublicAnimeDTO (
         Integer watchedEpisodes,
         Double score,
         String status,
-        Boolean favorite
+        Boolean favorite,
+        String comments
 ) {}

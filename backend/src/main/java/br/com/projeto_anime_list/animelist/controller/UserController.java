@@ -135,7 +135,8 @@ public class UserController {
                         a.getWatchedEpisodes(),
                         a.getScore(),
                         a.getStatus(),
-                        a.getFavorite()
+                        a.getFavorite(),
+                        a.getComments()
                 ))
                 .toList();
 

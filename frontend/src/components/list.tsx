@@ -23,6 +23,7 @@ export interface ListProps {
   reviewText: string;
   imageUrl: string;
   favorite?: boolean;
+  comment: string;
 }
 
 // dicionarios globais
