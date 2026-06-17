@@ -72,6 +72,35 @@ public class UserController {
         return ResponseEntity.ok(perfil);
     }
 
+    @GetMapping("/public-list")
+    public ResponseEntity<List<PublicProfileDTO>> getAllPublicUsers() {
+        // Busca usuarios
+        List<User> allUsers = userRepo.findAll();
+
+        // Converte cada utilizador para um DTO
+        List<PublicProfileDTO> publicUsers = allUsers.stream().map(u -> {
+            List<Anime> userAnimes = animeRepo.findByUser(u);
+
+            long totalAnimes = userAnimes.size();
+            long completed = userAnimes.stream().filter(a -> "COMPLETED".equalsIgnoreCase(a.getStatus())).count();
+            long watching = userAnimes.stream().filter(a -> "WATCHING".equalsIgnoreCase(a.getStatus())).count();
+            long dropped = userAnimes.stream().filter(a -> "DROPPED".equalsIgnoreCase(a.getStatus())).count();
+            long onHold = userAnimes.stream().filter(a -> "ON-HOLD".equalsIgnoreCase(a.getStatus())).count();
+            long totalEpisodesWatched = userAnimes.stream().mapToLong(Anime::getWatchedEpisodes).sum();
+            List<FavoriteAnimeDTO> favs = userAnimes.stream()
+                    .filter(a -> a.getFavorite() != null && a.getFavorite())
+                    .map(a -> new FavoriteAnimeDTO(a.getId(), a.getTitle(), a.getImageUrl()))
+                    .toList();
+
+            return new PublicProfileDTO(
+                    u.getId(), u.getName(), u.getEmail(), u.getProfileImageUrl(),
+                    totalAnimes, completed, watching, dropped, onHold, totalEpisodesWatched, favs
+            );
+        }).toList();
+
+        return ResponseEntity.ok(publicUsers);
+    }
+
     @GetMapping("/{id}/public-profile")
     public ResponseEntity<?> getPublicProfile(@PathVariable Long id) {
         Optional<User> userOptional = userRepo.findById(id);

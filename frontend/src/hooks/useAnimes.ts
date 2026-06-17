@@ -1,5 +1,4 @@
-// src/hooks/useAnimes.ts
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Anime } from "@/types/anime";
 import { STATUS_WEIGHTS } from "@/constants/animeConstants";
@@ -7,29 +6,16 @@ import { STATUS_WEIGHTS } from "@/constants/animeConstants";
 export function useAnimes() {
   const router = useRouter();
 
-  // Estados de Controle e Dados
   const [animes, setAnimes] = useState<Anime[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [userBasicInfo, setUserBasicInfo] = useState<{
-    name: string;
-    image: string;
-  } | null>(null);
 
-  // Estados de Filtro e Ordenação
   const [sortBy, setSortBy] = useState<string>("status");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterValue, setFilterValue] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
 
-  // Autenticação e Logout
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem("token");
-    router.push("/login");
-  }, [router]);
-
-  // Carga Inicial de Dados (Perfil + Animes)
   useEffect(() => {
     const loadAllData = async () => {
       const token = localStorage.getItem("token");
@@ -38,20 +24,6 @@ export function useAnimes() {
         return;
       }
 
-      // Fetch Perfil
-      try {
-        const res = await fetch("http://localhost:8080/api/users/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setUserBasicInfo({ name: data.name, image: data.profileImageUrl });
-        }
-      } catch (error) {
-        console.error("Erro ao carregar mini-perfil", error);
-      }
-
-      // Fetch Animes com Cache
       const cacheExistente = sessionStorage.getItem("meusAnimesCache");
       if (cacheExistente) {
         setAnimes(JSON.parse(cacheExistente));
@@ -85,13 +57,11 @@ export function useAnimes() {
     loadAllData();
   }, [router]);
 
-  // Manipulação de Filtros
   const handleFilterCategoryChange = (category: string) => {
     setFilterCategory(category);
     setFilterValue("");
   };
 
-  // Mutação: Alternar Favorito (Otimista)
   const handleToggleFavorite = async (id: number) => {
     const novosAnimes = animes.map((a) =>
       a.id === id ? { ...a, favorite: !a.favorite } : a,
@@ -261,7 +231,6 @@ export function useAnimes() {
   return {
     sortedAnimes,
     isLoading,
-    userBasicInfo,
     isPopupOpen,
     setIsPopupOpen,
     filterCategory,
@@ -273,7 +242,6 @@ export function useAnimes() {
     setSearchQuery,
     showFavoritesOnly,
     setShowFavoritesOnly,
-    handleLogout,
     handleFilterCategoryChange,
     handleToggleFavorite,
     handleUpdateAnimeEpisodes,

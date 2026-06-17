@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ListProps } from "@/components/List";
+import { Anime } from "@/types/anime";
 import {
   ArrowLeft,
   Loader2,
@@ -17,26 +17,19 @@ import {
   ThumbsUp,
 } from "lucide-react";
 import ReviewModal from "@/components/ReviewModal";
+import { VALUE_LABELS } from "@/constants/animeConstants";
 
-// Estendemos a ListProps para incluir o DTO que vem do Java
+// DTO do java
 interface AnimeDetailsDTO {
-  anime: ListProps & { tags?: string[] };
+  anime: Anime & { tags?: string[] };
   globalUserCount: number;
   globalAverageScore: number;
 }
 
-const VALUE_LABELS: Record<string, string> = {
-  Watching: "Assistindo",
-  Completed: "Concluído",
-  "On-Hold": "Pausado",
-  Dropped: "Abandonado",
-  "Plan to Watch": "Planejo ver",
-};
-
 export default function AnimeDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const animeId = params.id; // Pega o ID da URL
+  const animeId = params.id;
 
   const [data, setData] = useState<AnimeDetailsDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,9 +42,9 @@ export default function AnimeDetailsPage() {
   // modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [editForm, setEditForm] = useState<
-    Partial<ListProps & { tags: string[] }>
-  >({});
+  const [editForm, setEditForm] = useState<Partial<Anime & { tags: string[] }>>(
+    {},
+  );
   const [tagsInput, setTagsInput] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
@@ -93,6 +86,10 @@ export default function AnimeDetailsPage() {
           body: JSON.stringify(payload),
         },
       );
+
+      if (response.ok) {
+        sessionStorage.removeItem("meusAnimesCache");
+      }
 
       if (!response.ok) {
         throw new Error("Não foi possível salvar as alterações.");

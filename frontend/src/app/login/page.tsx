@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errormessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
 
@@ -53,14 +56,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-dark d-flex justify-content-center align-items-center vh-100">
+    <main className="bg-body d-flex justify-content-center align-items-center vh-100">
       <div className="card p-4 my-auto">
         <h2 className="card-title text-primary">Login</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-3">
             <label
               htmlFor="email"
-              className="form-label text-muted fw-semi-bold small"
+              className="form-label text-muted fw-bold small"
             >
               Email
             </label>
@@ -71,6 +74,7 @@ export default function LoginPage() {
               value={email}
               placeholder="Digite seu email"
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="mb-3">
@@ -80,14 +84,27 @@ export default function LoginPage() {
             >
               Senha
             </label>
-            <input
-              type="password"
-              id="password"
-              className="form-control fw-medium py-2"
-              value={password}
-              placeholder="senha"
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="position-relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className="form-control fw-medium py-2 pe-5"
+                value={password}
+                placeholder="senha"
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="btn btn-link position-absolute top-50 end-0 translate-middle-y text-muted text-decoration-none"
+                style={{ zIndex: 10 }}
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+                title={showPassword ? "Ocultar senha" : "Mostrar senha"}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
           {errormessage && (
             <div className="alert alert-danger" role="alert">
@@ -96,13 +113,24 @@ export default function LoginPage() {
           )}
           <button
             type="submit"
-            className="btn btn-primary bg-primary border-primary w-100 fw-semibold"
+            className="btn btn-primary bg-primary text-light border-primary w-100 fw-semibold"
             disabled={isLoading}
           >
             {isLoading ? "Carregando..." : "Entrar"}
           </button>
+          <div className="text-center mt-4 pt-3 border-top border-secondary-subtle">
+            <p className="text-muted small m-0">
+              Não tem uma conta?{" "}
+              <Link
+                href="/register"
+                className="text-primary text-decoration-none fw-bold"
+              >
+                Criar Conta
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
-    </div>
+    </main>
   );
 }

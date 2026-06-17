@@ -79,6 +79,53 @@ h6,
   white-space: nowrap;
 }
 
+/* =========================================
+   NAVBAR ESTILO VIDRO FOSCO (GLASSMORPHISM)
+   ========================================= */
+.glass-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  transition:
+    background-color 0.3s ease,
+    backdrop-filter 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* Ajuste fino para o Modo Claro */
+[data-bs-theme="light"] .glass-navbar {
+  background-color: rgba(
+    244,
+    246,
+    248,
+    0.75
+  ); /* var(--bs-body-bg) com opacidade */
+  backdrop-filter: blur(
+    12px
+  ); /* Faz o degradê do anime desfocar ainda mais ao passar por trás */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Ajuste fino para o Modo Escuro */
+[data-bs-theme="dark"] .glass-navbar {
+  background-color: rgba(
+    26,
+    32,
+    44,
+    0.75
+  ); /* var(--bs-body-bg) com opacidade */
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* COMPENSAÇÃO DE ESPAÇO NAS PÁGINAS 
+   Como a navbar agora é 'fixed', precisamos de empurrar o miolo das páginas para baixo */
+.main-content {
+  padding-top: 76px; /* Altura exata da navbar + respiro */
+}
+
 .anime-card {
   background-color: var(--bs-card-bg);
   transition:
@@ -94,7 +141,7 @@ h6,
 
 .anime-card:hover {
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
-  z-index: 1050;
+  z-index: 10;
 }
 
 .card-img-container {
@@ -140,7 +187,7 @@ h6,
   padding: 14px;
   border-radius: 6px;
   width: 260px;
-  z-index: 9999;
+  z-index: 100;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.7);
   pointer-events: none;
   text-align: left;

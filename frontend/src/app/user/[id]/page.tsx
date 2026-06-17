@@ -54,13 +54,13 @@ export default function PublicProfilePage() {
 
   if (!userProfile) {
     return (
-      <div className="container py-5 text-center">
+      <div className="container py-5 text-center mt-5">
         <h4 className="text-danger">
           Não foi possível carregar os dados do perfil.
         </h4>
         <Link
           href="/"
-          className="btn btn-primary mt-3 d-flex align-items-center gap-1"
+          className="btn bg-primary text-light mt-3 d-flex align-items-center gap-1"
         >
           <ArrowLeft size={16} /> Voltar ao Acervo
         </Link>

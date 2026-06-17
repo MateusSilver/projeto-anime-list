@@ -34,6 +34,7 @@ public class SecurityConfig {
                         // Libera apenas as rotas de login e cadastro
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/public-list").permitAll()
                         .requestMatchers("/error").permitAll()
 
                         // Tranca o resto

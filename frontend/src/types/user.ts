@@ -1,6 +1,7 @@
 import { Anime } from "./anime";
 
 export interface UserProfile {
+  id: number;
   name: string;
   email: string;
   profileImageUrl: string;

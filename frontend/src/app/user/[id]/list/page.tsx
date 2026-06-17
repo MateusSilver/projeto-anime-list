@@ -120,7 +120,7 @@ export default function PublicList() {
   }
 
   return (
-    <main className="container py-5">
+    <main className="container py-5 mt-5">
       {/* Cabeçalho simplificado */}
       <div className="d-flex justify-content-between align-items-center mb-5 border-bottom border-secondary-subtle pb-3 flex-wrap gap-3">
         <div>
@@ -196,7 +196,7 @@ export default function PublicList() {
         ))}
 
         {sortedAnimes.length === 0 && (
-          <div className="col-12 text-center py-5">
+          <div className="col-12 text-center py-5 mt-5">
             <div
               className="alert bg-body-tertiary border shadow-sm d-inline-block p-4 rounded-4"
               role="alert"

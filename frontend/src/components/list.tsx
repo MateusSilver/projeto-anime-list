@@ -1,6 +1,5 @@
 "use client";
 
-import DashboardHeader from "@/components/DashboardHeader";
 import AnimeControls from "@/components/AnimeControls";
 import FilterSummary from "@/components/FilterSummary";
 import AnimeGrid from "@/components/AnimeGrid";
@@ -13,7 +12,6 @@ export default function List() {
   const {
     sortedAnimes,
     isLoading,
-    userBasicInfo,
     isPopupOpen,
     setIsPopupOpen,
     filterCategory,
@@ -25,7 +23,6 @@ export default function List() {
     setSearchQuery,
     showFavoritesOnly,
     setShowFavoritesOnly,
-    handleLogout,
     handleFilterCategoryChange,
     handleToggleFavorite,
     handleUpdateAnimeEpisodes,
@@ -33,9 +30,7 @@ export default function List() {
   } = useAnimes();
 
   return (
-    <main className="container py-4">
-      <DashboardHeader userBasicInfo={userBasicInfo} onLogout={handleLogout} />
-
+    <main className="container py-4 mt-4">
       <AnimeControls
         filterCategory={filterCategory}
         onFilterCategoryChange={handleFilterCategoryChange}

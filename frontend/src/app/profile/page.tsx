@@ -97,7 +97,7 @@ export default function ProfilePage() {
 
   if (!userProfile) {
     return (
-      <div className="container py-5 text-center">
+      <div className="container py-5 text-center mt-5">
         <h4 className="text-danger">
           Não foi possível carregar os dados do perfil.
         </h4>
@@ -112,7 +112,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="container py-5">
+    <main className="container py-5 mt-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="fw-bold m-0">Meu Perfil</h1>
         <Link
@@ -166,7 +166,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     className="form-control fw-semibold"
-                    value={editName}
+                    value={editName || ""}
                     onChange={(e) => setEditName(e.target.value)}
                     required
                   />
