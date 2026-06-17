@@ -4,21 +4,7 @@ import { ArrowLeft, Mail, StarIcon, List } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ListProps } from "@/components/List";
-
-interface UserProfile {
-  name: string;
-  email: string;
-  profileImageUrl: string;
-  totalAnimes: number;
-  watching: number;
-  completed: number;
-  dropped: number;
-  onHold: number;
-  planToWatch: number;
-  totalEpisodesWatched: number;
-  favoriteAnimes: ListProps[];
-}
+import { UserProfile } from "@/types/user";
 
 export default function PublicProfilePage() {
   const params = useParams();

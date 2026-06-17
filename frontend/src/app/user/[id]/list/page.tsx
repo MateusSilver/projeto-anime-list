@@ -6,81 +6,20 @@ import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import AnimeCard from "@/components/AnimeCard";
 import AnimeControls from "@/components/AnimeControls";
-
-export interface ListProps {
-  id: number;
-  malId: number;
-  title: string;
-  type: string;
-  episodes: number;
-  watchedEpisodes: number;
-  score: number;
-  status: string;
-  comments: string;
-  reviewText: string;
-  imageUrl: string;
-  favorite?: boolean;
-}
-
-// dicionarios globais
-
-const CATEGORY_LABELS: Record<string, string> = {
-  status: "Status",
-  type: "Tipo",
-};
-
-const VALUE_LABELS: Record<string, string> = {
-  Watching: "Assistindo",
-  Completed: "Concluído",
-  "On-Hold": "Pausado",
-  Dropped: "Abandonado",
-  "Plan to Watch": "Planejo ver",
-  TV: "TV",
-  Movie: "Filme",
-  OVA: "OVA",
-  ONA: "Streaming",
-  Special: "Especial",
-  all: "Todos",
-};
-
-const STATUS_WEIGHTS: Record<string, number> = {
-  Watching: 1,
-  Completed: 2,
-  "On-Hold": 3,
-  Dropped: 4,
-  "Plan to Watch": 5,
-};
-
-const BADGE_CLASSES: Record<string, string> = {
-  Watching: "bg-success text-white",
-  Completed: "bg-info",
-  "On-Hold": "bg-warning text-dark",
-  Dropped: "bg-danger text-white",
-  "Plan to Watch": "bg-dark text-white",
-};
-
-const FILTER_OPTIONS: Record<string, { value: string; label: string }[]> = {
-  status: [
-    { value: "Watching", label: "Assistindo" },
-    { value: "Completed", label: "Concluído" },
-    { value: "On-Hold", label: "Pausado" },
-    { value: "Dropped", label: "Abandonado" },
-    { value: "Plan to Watch", label: "Planejo ver" },
-  ],
-  type: [
-    { value: "TV", label: "TV" },
-    { value: "Movie", label: "Filme" },
-    { value: "OVA", label: "OVA" },
-    { value: "ONA", label: "Streaming" },
-    { value: "Special", label: "Especial" },
-  ],
-};
+import { Anime } from "@/types/anime";
+import {
+  CATEGORY_LABELS,
+  VALUE_LABELS,
+  STATUS_WEIGHTS,
+  BADGE_CLASSES,
+  FILTER_OPTIONS,
+} from "@/constants/animeConstants";
 
 export default function PublicList() {
   const [sortBy, setSortBy] = useState<string>("status");
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterValue, setFilterValue] = useState<string>("");
-  const [animes, setAnimes] = useState<ListProps[]>([]);
+  const [animes, setAnimes] = useState<Anime[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);

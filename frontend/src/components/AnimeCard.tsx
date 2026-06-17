@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { MessageSquare, Plus, Star } from "lucide-react";
-import { ListProps } from "./List";
 import { useState } from "react";
 import Link from "next/link";
+import { Anime } from "@/types/anime";
 
 export interface AnimeCardProps {
-  anime: ListProps;
+  anime: Anime;
   onIncrement: (id: number) => void;
   onToggleFavorite: (id: number) => void;
   valueLabels: Record<string, string>;

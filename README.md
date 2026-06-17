@@ -39,7 +39,7 @@ O projeto é estruturado como um monorepo, facilitando a governança do código 
 - [x] lucide react para icones
 - [x] Resenhas em animes
 - [x] Visualização de outros perfis
-- [] Comentários em animes listados de outros usuários
+- [x] Comentários em animes listados de outros usuários
 - [] Menu
 
 ## Como rodar o projeto

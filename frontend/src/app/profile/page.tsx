@@ -1,37 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import {
-  Star,
-  User,
-  Lock,
-  ImageIcon,
-  ArrowLeft,
-  Mail,
-  ArrowLeftIcon,
-  User2Icon,
-  Loader2,
-  Save,
-  StarIcon,
-} from "lucide-react";
+import { ArrowLeft, Mail, Loader2, Save, StarIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ListProps } from "@/components/List";
-
-interface UserProfile {
-  name: string;
-  email: string;
-  profileImageUrl: string;
-  totalAnimes: number;
-  watching: number;
-  completed: number;
-  dropped: number;
-  onHold: number;
-  planToWatch: number;
-  totalEpisodesWatched: number;
-  favoriteAnimes: ListProps[];
-}
+import { UserProfile } from "@/types/user";
 
 export default function ProfilePage() {
   const router = useRouter();
