@@ -41,7 +41,7 @@ O projeto é estruturado como um monorepo, facilitando a governança do código 
 - [x] Visualização de outros perfis
 - [x] Comentários em animes listados de outros usuários
 - [x] Menu
-- [] Refatoração
+- [x] Refatoração
 - [] Responsividade
 
 ## Como rodar o projeto
