@@ -30,7 +30,7 @@ export default function ProfileEditSidebar({
   return (
     <div className="col-12 col-lg-4">
       {/* Cartão de Identificação */}
-      <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4 mb-3">
+      <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4 mb-3 text-center">
         <img
           src={
             userProfile.profileImageUrl ||

@@ -6,6 +6,7 @@ import { useProfile } from "@/hooks/useProfile";
 import ProfileEditSidebar from "@/components/ProfileEditSidebar";
 import ProfileStats from "@/components/ProfileStats";
 import ProfileFavorites from "@/components/ProfileFavorites";
+import BackButton from "@/components/BackButton";
 
 export default function ProfilePage() {
   const {
@@ -49,14 +50,9 @@ export default function ProfilePage() {
 
   return (
     <main className="container py-5 mt-5">
+      <BackButton href="/" />
       <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
         <h1 className="fw-bold m-0 text-primary">Meu Perfil</h1>
-        <Link
-          href="/"
-          className="d-flex align-items-center gap-2 btn btn-outline-secondary rounded-pill px-4 fw-semibold shadow-sm"
-        >
-          <ArrowLeft size={18} /> Voltar
-        </Link>
       </div>
 
       <div className="row g-4">

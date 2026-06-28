@@ -9,6 +9,7 @@ import ReviewModal from "@/components/ReviewModal";
 import EditAnimeModal from "@/components/EditAnimeModal";
 import AnimeDetailsSection from "@/components/AnimeDetailsSection";
 import CommunityReviewsSection from "@/components/CommunityReviewsSection";
+import BackButton from "@/components/BackButton";
 
 export default function AnimeDetailsPage() {
   const params = useParams();
@@ -88,11 +89,7 @@ export default function AnimeDetailsPage() {
         style={{ position: "relative", zIndex: 1, paddingTop: "125px" }}
       >
         {/* CABEÇALHO */}
-        <div className="mb-4">
-          <Link href="/" className="text-decoration-none text-body fw-semibold">
-            <ArrowLeft size={22} /> Voltar
-          </Link>
-        </div>
+        <BackButton href="/" />
 
         {/* 1. SEÇÃO DE DETALHES */}
         <AnimeDetailsSection

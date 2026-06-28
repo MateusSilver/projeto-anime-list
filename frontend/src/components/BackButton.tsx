@@ -13,7 +13,7 @@ export default function BackButton({
   return (
     <Link
       href={href}
-      className="d-inline-flex align-items-center gap-2 btn btn-outline-secondary rounded-pill px-4 fw-semibold shadow-sm"
+      className="d-inline-flex text-body text-decoration-none align-items-center gap-2 rounded-pill mb-1 fw-semibold shadow-sm"
       style={{ transition: "all 0.2s" }}
       onMouseOver={(e) =>
         (e.currentTarget.style.transform = "translateX(-4px)")
