@@ -40,8 +40,8 @@ export default function EditAnimeModal({
     >
       <div className="modal-dialog modal-dialog-centered modal-xl">
         <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-          <div className="modal-header border-bottom-0 bg-light pb-0 pt-4 px-4">
-            <h5 className="modal-title fw-bold text-dark">
+          <div className="modal-header border-bottom-0 pb-0 pt-4 px-4">
+            <h5 className="modal-title fw-bold text-body">
               Editar Dados do Anime
             </h5>
             <button

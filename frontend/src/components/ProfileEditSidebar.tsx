@@ -30,7 +30,7 @@ export default function ProfileEditSidebar({
   return (
     <div className="col-12 col-lg-4">
       {/* Cartão de Identificação */}
-      <div className="card border-0 rounded-4 p-4 text-center mb-4 bg-body shadow-sm">
+      <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4 mb-3">
         <img
           src={
             userProfile.profileImageUrl ||
@@ -47,7 +47,7 @@ export default function ProfileEditSidebar({
       </div>
 
       {/* Cartão de Edição de Dados */}
-      <div className="card border-0 shadow-sm rounded-4 p-4">
+      <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4">
         <h6 className="fw-bold mb-3 border-bottom pb-2">Editar Dados</h6>
 
         {message.text && (

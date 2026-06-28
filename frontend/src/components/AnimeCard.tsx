@@ -24,7 +24,7 @@ export default function AnimeCard({
   const [isHovering, setIsHovering] = useState(false);
 
   return (
-    <div className="card anime-card bg-body text-body-secondary">
+    <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 anime-card bg-body text-body-secondary">
       <Link href={`/anime/${anime.id}`}>
         <div className="card-img-container position-relative">
           {isReadOnly ? (

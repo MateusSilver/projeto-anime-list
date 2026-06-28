@@ -60,7 +60,7 @@ export default function RegisterPage() {
 
   return (
     <main className="bg-body d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 my-auto">
+      <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4">
         <h2 className="card-title text-primary">Criar Conta</h2>
         <p className="text-muted small">
           Junte-se à comunidade My Anime List Pro

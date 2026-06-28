@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2, Users } from "lucide-react";
 import { UserProfile } from "@/types/user";
+import EmptyState from "@/components/EmptySpace";
 
 export default function UsersCommunityPage() {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -54,7 +55,7 @@ export default function UsersCommunityPage() {
         {users.map((user) => (
           <div key={user.id} className="col-12 col-md-6 col-lg-4">
             <div
-              className="card h-100 border-0 rounded-3 bg-body-tertiary"
+              className=" h-100 border-0 card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4"
               style={{ transition: "transform 0.2s" }}
               onMouseOver={(e) =>
                 (e.currentTarget.style.transform = "translateY(-2px)")
@@ -91,9 +92,10 @@ export default function UsersCommunityPage() {
         ))}
 
         {users.length === 0 && (
-          <div className="col-12 text-center text-muted py-5">
-            Nenhum utilizador encontrado na plataforma.
-          </div>
+          <EmptyState
+            title={"Usuários não encontrados"}
+            description="o sistema ainda não tem usuários"
+          />
         )}
       </div>
     </main>

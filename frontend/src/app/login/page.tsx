@@ -57,7 +57,7 @@ export default function LoginPage() {
 
   return (
     <main className="bg-body d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 my-auto">
+      <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4">
         <h2 className="card-title text-primary">Login</h2>
         <form onSubmit={handleLogin}>
           <div className="mb-3">

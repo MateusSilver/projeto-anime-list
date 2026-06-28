@@ -120,7 +120,7 @@ export default function AnimeDetailsSection({
         <div className="mt-4">
           <button
             onClick={onOpenEdit}
-            className="btn bg-primary text-white border-primary btn-outline-primary fw-semibold px-4 d-flex align-items-center gap-1"
+            className="btn btn-primary fw-semibold px-4 d-flex align-items-center gap-1"
           >
             <Pen size={18} fill="currentColor" /> Editar Dados
           </button>

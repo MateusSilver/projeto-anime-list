@@ -8,6 +8,9 @@
   --bs-primary: #e05d5d;
   --bs-primary-rgb: 224, 93, 93;
 
+  --mal-brand-color: #f43f5e;
+  --mal-brand-hover: #e11d48;
+
   --bs-body-bg: #f4f6f8;
   --bs-body-color: #2d3748;
 
@@ -72,7 +75,33 @@ h6,
   color: var(--custom-muted-color) !important;
 }
 
-/*cor fixa do text-truncate para ele não bugar links */
+.text-primary {
+  color: var(--mal-brand-color) !important;
+}
+
+.btn-primary {
+  background-color: var(--mal-brand-color) !important;
+  border-color: var(--mal-brand-color) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--mal-brand-hover) !important;
+  border-color: var(--mal-brand-hover) !important;
+}
+
+.btn-outline-primary {
+  color: var(--mal-brand-color) !important;
+  border-color: var(--mal-brand-color) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--mal-brand-color) !important;
+  color: #ffffff !important;
+}
+
 .text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;

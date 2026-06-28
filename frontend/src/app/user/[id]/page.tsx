@@ -85,7 +85,7 @@ export default function PublicProfilePage() {
         {/* COLUNA ESQUERDA: Exibição da Foto e Formulário */}
         <div className="col-12 col-lg-4">
           {/* Cartão de Identificação */}
-          <div className="card border-0 rounded-4 p-4 text-center mb-4 bg-body-subtle">
+          <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4">
             <img
               src={
                 userProfile.profileImageUrl ||
@@ -206,7 +206,7 @@ export default function PublicProfilePage() {
                     className="text-decoration-none"
                   >
                     <div
-                      className="card border-0 h-100 text-center overflow-hidden"
+                      className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4 h-100 text-center overflow-hidden"
                       style={{ transition: "transform 0.2s" }}
                       onMouseOver={(e) =>
                         (e.currentTarget.style.transform = "scale(1.05)")

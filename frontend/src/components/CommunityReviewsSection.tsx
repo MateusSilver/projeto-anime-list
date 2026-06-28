@@ -27,7 +27,7 @@ export default function CommunityReviewsSection({
         <div className="alert bg-body-tertiary border-0 text-center py-4 d-flex align-items-center flex-column gap-2 text-body-secondary rounded-4">
           Nenhuma resenha encontrada para este anime. Seja o primeiro a avaliar!
           <button
-            className="btn bg-primary text-white rounded-2 fw-bold mt-2"
+            className="btn btn-primary text-white rounded-2 fw-bold mt-2"
             onClick={onOpenReviewModal}
           >
             Fazer uma Resenha
@@ -37,7 +37,7 @@ export default function CommunityReviewsSection({
         <div className="row g-3">
           {reviews.slice(0, 3).map((review, idx) => (
             <div key={idx} className="col-12">
-              <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-3">
+              <div className="card border border-secondary-subtle bg-body-tertiary shadow-sm rounded-4 p-4">
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div className="d-flex align-items-center gap-3">
                     <Link
