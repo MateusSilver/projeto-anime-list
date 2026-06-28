@@ -108,6 +108,32 @@ h6,
   white-space: nowrap;
 }
 
+/* Muda a cor de fundo e borda quando o switch/checkbox está ATIVO */
+.form-check-input:checked {
+  background-color: var(--mal-brand-color) !important;
+  border-color: var(--mal-brand-color) !important;
+  color: #fff;
+}
+
+/* Remove aquele aro azul brilhante padrão quando o elemento ganha foco (ao clicar) */
+.form-check-input:focus {
+  border-color: var(--mal-brand-hover) !important;
+  /* Cria um brilho suave usando a cor vermelha/salmão (em RGBA) */
+  box-shadow: 0 0 0 0.25rem rgba(244, 63, 94, 0.25) !important;
+  color: #fff;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--mal-brand-hover) !important;
+  /* O box-shadow cria a aura ao redor do input. Usamos o RGB do seu salmão (244, 63, 94) com 25% de opacidade */
+  box-shadow: 0 0 0 0.25rem rgba(244, 63, 94, 0.25) !important;
+}
+
+input {
+  box-shadow: var(--mal-brand-hover) !important;
+}
+
 /* =========================================
    NAVBAR ESTILO VIDRO FOSCO (GLASSMORPHISM)
    ========================================= */

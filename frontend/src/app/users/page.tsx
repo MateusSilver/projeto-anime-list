@@ -81,7 +81,7 @@ export default function UsersCommunityPage() {
                   </p>
                   <Link
                     href={`/user/${user.id}/list`}
-                    className="btn btn-sm bg-primary text-light rounded-pill px-3"
+                    className="btn btn-primary text-light fw-semibold rounded-3 px-3"
                   >
                     Ver Acervo
                   </Link>
